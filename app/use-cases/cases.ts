@@ -1,5 +1,7 @@
 export type UseCaseAccent = "blue" | "mint" | "coral" | "violet";
 
+export const WORKER_HOST_VIDEO_REFERENCE_SHA = "5f93da1f50fdaa9bc831629d010fdda2fd181a72";
+
 export type AnalysisPreviewDefinition = {
   label: string;
   title: string;
@@ -41,6 +43,7 @@ export type UseCaseDefinition = {
   ctaTitle: string;
   ctaCopy: string;
   ctaLabel: string;
+  videoNarration: string[];
   analysisPreview?: AnalysisPreviewDefinition;
 };
 
@@ -94,6 +97,12 @@ export const useCases: UseCaseDefinition[] = [
     ctaTitle: "반복 작성은 Worker에게, 공식 판단은 담당자에게.",
     ctaCopy: "문서 한 종류와 담당자 한 명부터 시작해 초안 품질, 누락 항목과 검토 시간을 확인합니다.",
     ctaLabel: "문서업무 적용 가능성 검토하기",
+    videoNarration: [
+      "하나의 서식, 제각각인 자료.",
+      "문서 워커가 항목과 누락을 정리합니다.",
+      "검토할 근거가 화면에 보이고,",
+      "담당자는 확인한 뒤 제출을 결정합니다.",
+    ],
   },
   {
     slug: "sales-data-analysis",
@@ -146,6 +155,12 @@ export const useCases: UseCaseDefinition[] = [
     ctaTitle: "데이터를 모으는 시간에서, 숫자를 결정하는 시간으로.",
     ctaCopy: "거래처별 판매량처럼 질문과 산식이 분명한 분석 하나를 선택해 자료 취합 시간, 누락과 사람의 검토 항목을 파일럿에서 측정합니다.",
     ctaLabel: "우리 데이터의 적용 조건 확인하기",
+    videoNarration: [
+      "흩어져 있던 판매와 매입 자료.",
+      "워커가 승인 데이터를 한 화면에 모읍니다.",
+      "변화와 수익 흐름이 선명해지고,",
+      "담당자는 보이는 근거로 다음 결정을 내립니다.",
+    ],
     analysisPreview: {
       label: "가상 분석 페이퍼 · 실제 고객 데이터 아님",
       title: "거래처별 판매량과 수익성 한눈에",
@@ -229,6 +244,12 @@ export const useCases: UseCaseDefinition[] = [
     ctaTitle: "운영자료를 찾는 시간에서, 실행을 결정하는 시간으로.",
     ctaCopy: "반복되는 보고나 회의 후속 업무 하나를 선택해 입력자료와 사람의 결정 지점을 먼저 정의합니다.",
     ctaLabel: "첫 운영업무 Worker 검토하기",
+    videoNarration: [
+      "쌓여 가는 요청과 일정.",
+      "운영 워커가 담당자와 기한을 한 화면에 모읍니다.",
+      "위험 신호와 우선순위가 보이면,",
+      "담당자는 필요한 조치를 선택합니다.",
+    ],
   },
   {
     slug: "software-team",
@@ -279,6 +300,12 @@ export const useCases: UseCaseDefinition[] = [
     ctaTitle: "팀원을 대체하지 않고, 각 역할의 준비와 검토 역량을 넓힙니다.",
     ctaCopy: "요구사항 정리, 코드 영향 분석 또는 테스트 준비 중 하나를 첫 역할별 Worker 후보로 선택합니다.",
     ctaLabel: "우리 팀의 첫 역할별 Worker 설계하기",
+    videoNarration: [
+      "제품, 개발, 품질. 역할은 그대로.",
+      "각자 워커에 직접 요청합니다.",
+      "요구와 변경, 테스트가 정리되고,",
+      "팀이 함께 검토해 결정합니다.",
+    ],
   },
 ];
 

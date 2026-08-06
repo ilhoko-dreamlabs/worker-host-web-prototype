@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AnalysisPaper from "../../components/AnalysisPaper";
 import CaseFooter from "../../components/CaseFooter";
 import CaseHeader from "../../components/CaseHeader";
+import CaseVideoBoard from "../../components/CaseVideoBoard";
 import { getUseCase, useCases } from "../cases";
 
 const publishedUrl = "https://ilhoko-dreamlabs.github.io/worker-host-web-prototype/";
@@ -71,19 +72,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
           <p className="case-audience"><strong>이런 역할을 위해</strong><span>{item.audience}</span></p>
         </div>
 
-        <section className="case-hero-board" aria-label={`${item.navLabel} 요청과 검토 결과 예시`}>
-          <div className="scenario-label"><span>가상 적용 시나리오</span><small>실제 고객 사례 아님</small></div>
-          <div className="case-request-card">
-            <small>AUTHENTICATED USER · INDEPENDENT REQUEST</small>
-            <blockquote>“{item.requestExample}”</blockquote>
-          </div>
-          <div className="case-board-arrow" aria-hidden="true"><span>Worker 처리</span><i /></div>
-          <div className="case-result-card">
-            <div><small>REVIEWABLE RESULT</small><strong>{item.resultSummary}</strong></div>
-            <div><small>HUMAN DECISION</small><strong>{item.decisionSummary}</strong></div>
-          </div>
-          <p><span aria-hidden="true">●</span> Worker 간 자동 지휘 없이, 담당자가 다음 단계를 결정합니다.</p>
-        </section>
+        <CaseVideoBoard item={item} />
       </section>
 
       <section className="case-principles" aria-label="시나리오 적용 원칙">

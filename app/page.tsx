@@ -247,11 +247,11 @@ export default function Home() {
           <div className="usecase-grid scenario-entry-grid">
             {homepageCases.map((item) => (
               <Link className={`usecase-entry accent-${item.accent}`} href={`/use-cases/${item.slug}`} key={item.slug}>
-                <div><span>{item.number}</span><small>활용 시나리오 · 실제 고객 사례 아님</small></div>
+                <div><span>{item.number}</span><small>15초 사례 영상 · 실제 고객 사례 아님</small></div>
                 <strong>{item.label}</strong>
                 <h3>{item.title}</h3>
                 <p>{item.copy}</p>
-                <b>사례 페이지 보기 <span aria-hidden="true">↗</span></b>
+                <b>15초 영상과 사례 보기 <span aria-hidden="true">↗</span></b>
               </Link>
             ))}
           </div>
