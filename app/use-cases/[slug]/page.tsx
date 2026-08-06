@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AnalysisPaper from "../../components/AnalysisPaper";
 import CaseFooter from "../../components/CaseFooter";
 import CaseHeader from "../../components/CaseHeader";
 import { getUseCase, useCases } from "../cases";
@@ -35,13 +36,13 @@ export async function generateMetadata({ params }: UseCasePageProps): Promise<Me
       description: item.shortDescription,
       type: "website",
       url: canonicalUrl,
-      images: [{ url: `${publishedUrl}og-v2.png`, width: 1744, height: 909, alt: "기관·기업 운영·개발팀의 역할별 Worker 활용 시나리오" }],
+      images: [{ url: `${publishedUrl}og-v3.png`, width: 1729, height: 910, alt: "판매·수익성 분석을 포함한 역할별 Worker 활용 시나리오" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: item.shortDescription,
-      images: [`${publishedUrl}og-v2.png`],
+      images: [`${publishedUrl}og-v3.png`],
     },
   };
 }
@@ -70,10 +71,10 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
           <p className="case-audience"><strong>이런 역할을 위해</strong><span>{item.audience}</span></p>
         </div>
 
-        <div className="case-hero-board" aria-label={`${item.navLabel} 요청과 검토 결과 예시`}>
+        <section className="case-hero-board" aria-label={`${item.navLabel} 요청과 검토 결과 예시`}>
           <div className="scenario-label"><span>가상 적용 시나리오</span><small>실제 고객 사례 아님</small></div>
           <div className="case-request-card">
-            <small>PERSON · INDEPENDENT REQUEST</small>
+            <small>AUTHENTICATED USER · INDEPENDENT REQUEST</small>
             <blockquote>“{item.requestExample}”</blockquote>
           </div>
           <div className="case-board-arrow" aria-hidden="true"><span>Worker 처리</span><i /></div>
@@ -82,12 +83,14 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
             <div><small>HUMAN DECISION</small><strong>{item.decisionSummary}</strong></div>
           </div>
           <p><span aria-hidden="true">●</span> Worker 간 자동 지휘 없이, 담당자가 다음 단계를 결정합니다.</p>
-        </div>
+        </section>
       </section>
 
       <section className="case-principles" aria-label="시나리오 적용 원칙">
         <span>독립 요청</span><span>승인된 지식과 도구</span><span>검토 가능한 결과</span><span>사람의 최종 결정</span>
       </section>
+
+      {item.analysisPreview ? <AnalysisPaper preview={item.analysisPreview} /> : null}
 
       <section className="case-problems section-shell">
         <div className="section-heading split-heading">
@@ -134,10 +137,10 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
       <section className="case-scenarios" id="scenarios">
         <div className="section-shell">
           <div className="section-heading split-heading light-heading">
-            <div><p className="eyebrow"><span /> EXAMPLE REQUESTS</p><h2>업무 장면으로 보는<br />세 가지 적용 예시</h2></div>
+            <div><p className="eyebrow"><span /> EXAMPLE REQUESTS</p><h2>업무 장면으로 보는<br />{item.scenarios.length}가지 적용 예시</h2></div>
             <p>각 예시는 적용 가능성을 설명하기 위한 시나리오이며 실제 제공 범위는 환경별 검증이 필요합니다.</p>
           </div>
-          <div className="scenario-detail-grid">
+          <div className={`scenario-detail-grid ${item.scenarios.length === 4 ? "is-four" : ""}`}>
             {item.scenarios.map((scenario) => (
               <article key={scenario.number}>
                 <div className="scenario-card-head"><span>{scenario.number}</span><h3>{scenario.title}</h3></div>
@@ -163,14 +166,14 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
             <article key={system.title}><span aria-hidden="true">{system.mark}</span><div><h3>{system.title}</h3><p>{system.copy}</p></div></article>
           ))}
         </div>
-        <div className="case-status-note"><strong>상태 구분</strong><p>화면의 연결은 목표 시나리오입니다. Source-only, 검증 환경, 특정 Worker 배포와 외부 시스템 연계 상태를 구분해 확인합니다.</p></div>
+        <div className="case-status-note"><strong>상태 구분</strong><p>화면의 연결은 목표 시나리오입니다. Source-only / Deployed / Blocked 상태와 외부 시스템 연계 여부를 구분해 확인합니다.</p></div>
       </section>
 
       <section className="case-fit" id="fit">
         <div className="section-shell case-fit-layout">
           <div>
             <p className="eyebrow"><span /> PILOT CHECK</p>
-            <h2>첫 Worker 후보인지<br />네 가지로 확인하세요.</h2>
+            <h2>첫 Worker 후보인지<br />{item.checklist.length}가지로 확인하세요.</h2>
             <p>모든 업무를 한 번에 바꾸지 않고, 입력과 검토 기준이 보이는 작은 업무부터 시작합니다.</p>
           </div>
           <ul>
