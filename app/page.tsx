@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 type Role = {
@@ -79,6 +80,33 @@ const faqs = [
   },
 ];
 
+const homepageCases = [
+  {
+    slug: "institution-documents",
+    number: "01",
+    label: "기관 문서업무",
+    title: "정해진 서식은 기준에 맞게, 서식이 없는 문서는 구조부터",
+    copy: "보고서·접수 문서·회의자료를 초안, 누락 후보와 참고 근거로 정리합니다.",
+    accent: "blue",
+  },
+  {
+    slug: "business-operations",
+    number: "02",
+    label: "기업 운영업무",
+    title: "흩어진 운영정보를 다음 행동이 보이는 결과로",
+    copy: "회의·요청·실적자료를 핵심 요약, 실행 항목과 확인 필요사항으로 구조화합니다.",
+    accent: "mint",
+  },
+  {
+    slug: "software-team",
+    number: "03",
+    label: "작은 개발팀",
+    title: "제품·개발·QA 역할은 유지하고 AI 실행력은 확장",
+    copy: "역할자가 각자의 Worker에 독립 요청하고 요구사항·영향 분석·테스트 결과를 검토합니다.",
+    accent: "coral",
+  },
+];
+
 function Arrow() {
   return (
     <span className="lane-arrow" aria-hidden="true">
@@ -106,7 +134,7 @@ export default function Home() {
         <button
           className="menu-button"
           type="button"
-          aria-label="메뉴 열기"
+          aria-label={menuOpen ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
         >
@@ -115,9 +143,9 @@ export default function Home() {
         </button>
         <nav className={menuOpen ? "site-nav is-open" : "site-nav"} aria-label="주요 메뉴">
           <a href="#value" onClick={closeMenu}>제품 가치</a>
-          <a href="#how" onClick={closeMenu}>작동 방식</a>
+          <a href="#usecases" onClick={closeMenu}>활용 사례</a>
           <a href="#roles" onClick={closeMenu}>역할별 Worker</a>
-          <a href="#trust" onClick={closeMenu}>신뢰 설계</a>
+          <a href="#architecture" onClick={closeMenu}>전체 구성</a>
           <a className="nav-cta" href="#contact" onClick={closeMenu}>도입 상담</a>
         </nav>
       </header>
@@ -127,10 +155,10 @@ export default function Home() {
           <p className="eyebrow"><span /> DREAMLABS · WORKER HOST</p>
           <h1>팀의 역할은 유지하고,<br /><em>AI 실행력은 확장하세요.</em></h1>
           <p className="hero-lead">
-            제품 기획부터 개발, QA와 운영까지. 역할별 Worker가 팀의 지식과 도구를 활용해 요청을 수행하고, 사람은 검토와 결정에 집중합니다.
+            기관 문서업무부터 기업 운영과 개발팀까지. 역할별 Worker가 승인된 지식과 도구로 사람의 독립 요청을 처리하고, 담당자는 검토와 결정에 집중합니다.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#contact">도입 상담하기 <span aria-hidden="true">↗</span></a>
+            <a className="button button-primary" href="#usecases">적용 사례 보기 <span aria-hidden="true">↓</span></a>
             <a className="button button-secondary" href="#how">작동 방식 보기 <span aria-hidden="true">↓</span></a>
           </div>
           <p className="hero-note"><span aria-hidden="true">●</span> 요청은 독립적으로 · 결과는 투명하게 · 결정은 사람에게</p>
@@ -144,40 +172,40 @@ export default function Home() {
           </div>
           <div className="work-lane lane-product">
             <div className="person-node">
-              <span className="avatar">PL</span>
-              <div><small>Product Lead</small><strong>요구사항 정리</strong></div>
+              <span className="avatar">DO</span>
+              <div><small>Document Owner</small><strong>보고서 초안 요청</strong></div>
             </div>
             <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>PRODUCT WORKER</small><strong>범위와 기준 분석</strong></div>
+            <div className="worker-node"><span className="status-dot" /><small>DOCUMENT WORKER</small><strong>서식과 근거 정리</strong></div>
             <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>기능 범위 · 수용 기준</strong></div>
+            <div className="result-node"><small>RESULT</small><strong>초안 · 누락 · 참고 근거</strong></div>
           </div>
           <div className="work-lane lane-engineering">
             <div className="person-node">
-              <span className="avatar">DV</span>
-              <div><small>Developer</small><strong>구현 영향 분석</strong></div>
+              <span className="avatar">OP</span>
+              <div><small>Operations Lead</small><strong>운영보고 정리</strong></div>
             </div>
             <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>ENGINEERING WORKER</small><strong>코드와 테스트 실행</strong></div>
+            <div className="worker-node"><span className="status-dot" /><small>OPERATIONS WORKER</small><strong>실적과 이슈 구조화</strong></div>
             <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>변경 제안 · 테스트 결과</strong></div>
+            <div className="result-node"><small>RESULT</small><strong>요약 · 실행 항목 · 위험</strong></div>
           </div>
           <div className="work-lane lane-qa">
             <div className="person-node">
-              <span className="avatar">QA</span>
-              <div><small>QA / Operator</small><strong>검증과 출시 점검</strong></div>
+              <span className="avatar">DV</span>
+              <div><small>Developer / QA</small><strong>변경과 테스트 검토</strong></div>
             </div>
             <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>QA · RELEASE WORKER</small><strong>위험과 상태 확인</strong></div>
+            <div className="worker-node"><span className="status-dot" /><small>ENGINEERING WORKER</small><strong>영향과 검증 준비</strong></div>
             <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>검증 결과 · 운영 증거</strong></div>
+            <div className="result-node"><small>RESULT</small><strong>변경 제안 · 테스트 결과</strong></div>
           </div>
           <div className="system-rail">
             <span><i className="system-icon">K</i> Runtime Knowledge</span>
             <span><i className="system-icon">T</i> Approved Tools</span>
             <span><i className="system-icon">R</i> Status &amp; Readback</span>
           </div>
-          <p className="visual-caption"><span /> Worker 간 자동 연결 없이, 역할자가 다음 단계를 결정합니다.</p>
+          <p className="visual-caption"><span /> 가상 역할 구성 예시 · Worker 간 자동 연결 없이 역할자가 다음 단계를 결정합니다.</p>
         </div>
       </section>
 
@@ -186,6 +214,29 @@ export default function Home() {
         <div><span>02</span><strong>독립 요청 실행</strong></div>
         <div><span>03</span><strong>사람의 승인</strong></div>
         <div><span>04</span><strong>상태와 결과 추적</strong></div>
+      </section>
+
+      <section className="usecases-section" id="usecases">
+        <div className="section-shell">
+          <div className="section-heading split-heading light-heading">
+            <div>
+              <p className="eyebrow"><span /> WORK SCENARIOS</p>
+              <h2>내 업무와 닮은 장면부터<br />확인하세요.</h2>
+            </div>
+            <p>기술 구조보다 먼저 누가 무엇을 요청하고, 어떤 결과를 검토하며, 사람이 어디에서 결정하는지 사례별로 보여드립니다.</p>
+          </div>
+          <div className="usecase-grid scenario-entry-grid">
+            {homepageCases.map((item) => (
+              <Link className={`usecase-entry accent-${item.accent}`} href={`/use-cases/${item.slug}`} key={item.slug}>
+                <div><span>{item.number}</span><small>활용 시나리오 · 실제 고객 사례 아님</small></div>
+                <strong>{item.label}</strong>
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+                <b>사례 페이지 보기 <span aria-hidden="true">↗</span></b>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="problem-section section-shell" id="value">
@@ -353,30 +404,6 @@ export default function Home() {
           </div>
           <div className="knowledge-flow"><span>요청에 필요한 범위만 선택</span><i /></div>
           <div className="knowledge-output"><span className="knowledge-core">K</span><div><small>TURN CONTEXT</small><strong>Worker 실행 전 맥락</strong><p>사용한 지식의 provenance를 결과와 연결합니다.</p></div></div>
-        </div>
-      </section>
-
-      <section className="usecases-section" id="usecases">
-        <div className="section-shell">
-          <div className="section-heading split-heading light-heading">
-            <div>
-              <p className="eyebrow"><span /> START SMALL</p>
-              <h2>팀의 반복 업무에서<br />바로 시작하세요</h2>
-            </div>
-            <p>분석과 문서화처럼 위험이 낮고 반복되는 업무에서 시작해 검증된 범위만 단계적으로 확장합니다.</p>
-          </div>
-          <div className="usecase-grid">
-            {[
-              ["01", "요구사항 정리", "고객 요청과 회의 내용을 기능 범위와 수용 기준으로 구조화"],
-              ["02", "코드 영향 분석", "변경 대상, 의존성과 기술 위험을 검토 가능한 형태로 정리"],
-              ["03", "구현·리팩터링 보조", "정해진 범위에서 코드 작성과 반복적인 개선 작업 지원"],
-              ["04", "테스트 설계", "요구사항 기반 시나리오와 실패 조건, 검증 결과를 정리"],
-              ["05", "장애 분석", "운영 기록을 바탕으로 원인 후보와 확인 순서를 구조화"],
-              ["06", "배포 전 점검", "위험, rollback과 사후 readback 항목을 체크리스트로 제공"],
-            ].map(([number, title, copy]) => (
-              <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p><i aria-hidden="true">↗</i></article>
-            ))}
-          </div>
         </div>
       </section>
 

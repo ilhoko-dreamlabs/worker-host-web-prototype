@@ -6,7 +6,9 @@
 
 ## 포함된 화면
 
-- 사람 → 역할별 Worker → 결과 Hero 구성도
+- 기관 문서업무·기업 운영·작은 개발팀을 함께 보여주는 Hero 구성도
+- 사례별 상세 페이지 3개
+- 정형·혼합형·비정형 업무의 시작 방식 비교
 - Product·Engineering·QA·Release Worker 전환
 - 요청 → 확인 → 실행 → 결과 흐름
 - Runtime Knowledge 소개
@@ -38,9 +40,11 @@ npm run build:pages
 ## 주요 파일
 
 - `app/page.tsx`: 웹페이지 콘텐츠와 역할별 Worker 인터랙션
+- `app/use-cases/[slug]/page.tsx`: 사례별 공통 페이지 템플릿
+- `app/use-cases/cases.ts`: 기관·기업 운영·개발팀 사례 콘텐츠
 - `app/globals.css`: 전체 디자인과 반응형 스타일
 - `app/layout.tsx`: 페이지 metadata와 소셜 공유 설정
-- `public/og.png`: 소셜 공유 이미지
+- `public/og-v2.png`: 사례 범위를 반영한 소셜 공유 이미지
 
 ## 자료 상태
 
