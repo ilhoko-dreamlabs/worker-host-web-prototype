@@ -35,6 +35,9 @@ jobs:
       - name: Build static site
         run: npm run build:pages
 
+      - name: Keep video binaries outside the Pages payload
+        run: find out/media/use-cases -type f -name 'scenario-v5.mp4' -delete
+
       - name: Publish gh-pages branch
         shell: bash
         run: |

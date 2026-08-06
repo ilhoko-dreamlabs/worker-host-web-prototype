@@ -7,9 +7,14 @@ type CaseVideoBoardProps = {
   item: UseCaseDefinition;
 };
 
+const pinnedVideoAssetSha = "f52406b8278dfc21e8e6db1c9a2bb556d4dbb371";
+const pinnedVideoAssetRoot =
+  `https://cdn.jsdelivr.net/gh/ilhoko-dreamlabs/worker-host-web-prototype@${pinnedVideoAssetSha}/public/media/use-cases`;
+
 export default function CaseVideoBoard({ item }: CaseVideoBoardProps) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const mediaRoot = `${basePath}/media/use-cases/${item.slug}`;
+  const videoUrl = `${pinnedVideoAssetRoot}/${item.slug}/scenario-v5.mp4`;
   const titleId = `${item.slug}-video-title`;
   const noteId = `${item.slug}-video-note`;
 
@@ -33,7 +38,7 @@ export default function CaseVideoBoard({ item }: CaseVideoBoardProps) {
               aria-labelledby={titleId}
               aria-describedby={noteId}
             >
-              <source src={`${mediaRoot}/scenario-v5.mp4`} type="video/mp4" />
+              <source src={videoUrl} type="video/mp4" />
               <track
                 default
                 kind="captions"
