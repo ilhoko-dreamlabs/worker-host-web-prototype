@@ -1,4 +1,16 @@
-export type UseCaseAccent = "blue" | "mint" | "coral";
+export type UseCaseAccent = "blue" | "mint" | "coral" | "violet";
+
+export type AnalysisPreviewDefinition = {
+  label: string;
+  title: string;
+  period: string;
+  kpis: Array<{ label: string; value: string; note: string; tone: "up" | "check" | "neutral" }>;
+  accounts: Array<{ name: string; share: number; change: string }>;
+  formula: { label: string; value: string; note: string };
+  promotion: { before: number; after: number; change: string; note: string };
+  checks: string[];
+  disclaimer: string;
+};
 
 export type UseCaseDefinition = {
   slug: string;
@@ -29,6 +41,7 @@ export type UseCaseDefinition = {
   ctaTitle: string;
   ctaCopy: string;
   ctaLabel: string;
+  analysisPreview?: AnalysisPreviewDefinition;
 };
 
 export const useCases: UseCaseDefinition[] = [
@@ -81,6 +94,91 @@ export const useCases: UseCaseDefinition[] = [
     ctaTitle: "반복 작성은 Worker에게, 공식 판단은 담당자에게.",
     ctaCopy: "문서 한 종류와 담당자 한 명부터 시작해 초안 품질, 누락 항목과 검토 시간을 확인합니다.",
     ctaLabel: "문서업무 적용 가능성 검토하기",
+  },
+  {
+    slug: "sales-data-analysis",
+    navLabel: "판매·수익성 분석",
+    shortDescription: "판매·매입·프로모션 자료를 산식과 근거가 보이는 분석 결과로 정리",
+    accent: "violet",
+    eyebrow: "활용 시나리오 · 판매·수익성 데이터 분석",
+    title: ["판매·매입 자료를", "결정할 숫자로."],
+    lead: "무엇을 확인할지는 사람이 정합니다. Worker는 승인된 자료를 합의된 기준으로 정리하고 비교표, 증감과 확인할 항목을 준비합니다. 가격·발주·프로모션 결정은 책임자가 검토하고 확정합니다.",
+    audience: "대표 · 사업책임자 · 영업·구매 담당자",
+    requestExample: "올해 AI 제품의 거래처별 판매량과 매입 대비 매출비율, 프로모션 전후 변화를 분석해 줘.",
+    resultSummary: "거래처 순위 · 비율·증감 · 이상·누락 후보",
+    decisionSummary: "영업 집중 · 가격·프로모션 · 발주 방향",
+    painPoints: [
+      { title: "자료가 여러 파일에 흩어집니다", copy: "판매, 매입과 프로모션 자료가 업무시스템, 엑셀과 담당자별 파일에 나뉘어 있습니다." },
+      { title: "산식과 기간이 매번 달라집니다", copy: "같은 이름의 지표도 포함 범위와 계산 기준이 달라 비교 결과를 다시 확인하게 됩니다." },
+      { title: "숫자 뒤의 확인사항이 남습니다", copy: "수치가 나와도 반품, 누락, 계절성과 행사 조건을 따로 대조하느라 판단이 늦어집니다." },
+    ],
+    flow: [
+      { label: "01 · PERSON", title: "업무 질문과 기준 지정", copy: "분석 대상, 기간, 비교 기준과 필요한 결과를 사람이 명시합니다." },
+      { label: "02 · DATA", title: "승인된 데이터 확인", copy: "허용된 판매·매입 자료의 필드, 누락과 기준정보를 먼저 확인합니다." },
+      { label: "03 · WORKER", title: "계산·비교 결과 준비", copy: "합의된 산식으로 집계하고 변화, 이상 후보와 근거를 함께 정리합니다." },
+      { label: "04 · DECISION", title: "책임자의 검토와 결정", copy: "담당자가 산식과 업무 맥락을 확인한 뒤 공식 결정을 내립니다." },
+    ],
+    modes: [
+      { label: "SALES", title: "판매 흐름", copy: "거래처·제품·기간별 판매량과 매출 흐름을 같은 기준으로 비교", result: "순위 · 비중 · 추이 · 이상 변화" },
+      { label: "PROFIT", title: "수익성 기준", copy: "매입·매출·할인·반품 범위를 합의한 뒤 비율과 기준 이탈을 확인", result: "산식 · 비율 · 이탈 항목 · 근거" },
+      { label: "CAMPAIGN", title: "프로모션 변화", copy: "행사 전후 또는 참여·비참여 집단의 관찰된 판매량 변화를 비교", result: "절대 증감 · 증감률 · 확인 변수" },
+    ],
+    scenarios: [
+      { number: "01", title: "거래처별 판매량", request: "올해 AI 제품 판매량을 거래처별·월별로 비교해 줘.", inputs: "판매전표 · 제품·거래처 기준 · 취소·반품 자료", result: "거래처 순위 · 판매 비중 · 월별 추이 · 누락 후보", decision: "책임자가 집중 영업 거래처와 추가 확인 대상을 결정" },
+      { number: "02", title: "매입 대비 매출비율", request: "합의한 산식으로 제품별 매입 대비 매출비율을 계산해 줘.", inputs: "매입·매출 자료 · 할인·반품·세금 기준 · 제품정보", result: "적용 산식 · 제품·기간별 비율 · 기준 이탈과 근거", decision: "담당자가 회계 범위를 확인하고 가격·구매조건 검토 여부를 결정" },
+      { number: "03", title: "프로모션 전후 비교", request: "참여업체의 프로모션 전후 판매량 변화를 비교해 줘.", inputs: "참여업체 · 행사·비교 기간 · 판매량 · 취소·반품 자료", result: "전후·참여군 비교 · 증감 · 계절성 등 확인 필요사항", decision: "책임자가 프로모션 유지·수정·종료 여부를 판단" },
+      { number: "04", title: "원가·견적 준비", request: "재료비와 수량, 목표 마진과 로스비용 3%를 반영해 견적 초안을 준비해 줘.", inputs: "재료 단가·수량 · 매입가 · 목표 마진 · 승인된 견적 형식", result: "산식·가정이 표시된 원가표 · 견적 초안 · 확인 항목", decision: "책임자가 가격을 승인하고 공식 견적 발행 여부를 결정" },
+    ],
+    systems: [
+      { mark: "S", title: "판매·주문자료", copy: "거래일, 거래처, 제품, 수량과 매출액" },
+      { mark: "P", title: "매입·원가자료", copy: "매입액, 재료비, 할인·반품과 적용 기준" },
+      { mark: "M", title: "기준정보", copy: "제품·거래처 매핑, 행사 기간과 참여업체" },
+      { mark: "A", title: "승인된 연결", copy: "엑셀·CSV 또는 검증된 업무시스템 읽기 범위" },
+    ],
+    guardrail: "Worker는 분석 근거와 확인 항목을 준비합니다. 판매 증가의 원인을 단정하거나 가격·발주·프로모션을 자동 결정하지 않으며, 공식 시스템 반영과 견적 발행은 책임자의 별도 승인으로 분리합니다.",
+    checklist: [
+      "분석할 질문을 한 문장으로 정의할 수 있는가?",
+      "기간·대상·산식과 제외 조건이 합의됐는가?",
+      "필요한 데이터의 읽기 권한과 기준정보가 준비됐는가?",
+      "누락·이상값과 업무 맥락을 검토할 담당자가 있는가?",
+      "다음 분석을 시작할 사람 또는 승인된 일정이 정해져 있는가?",
+    ],
+    ctaTitle: "데이터를 모으는 시간에서, 숫자를 결정하는 시간으로.",
+    ctaCopy: "거래처별 판매량처럼 질문과 산식이 분명한 분석 하나를 선택해 자료 취합 시간, 누락과 사람의 검토 항목을 파일럿에서 측정합니다.",
+    ctaLabel: "우리 데이터의 적용 조건 확인하기",
+    analysisPreview: {
+      label: "가상 분석 페이퍼 · 실제 고객 데이터 아님",
+      title: "거래처별 판매량과 수익성 한눈에",
+      period: "예시 기간 2026.01–06 · 기준일 2026.06.30",
+      kpis: [
+        { label: "총 판매수량", value: "12,480개", note: "비교기간 대비 +8.4%", tone: "up" },
+        { label: "상위 거래처 비중", value: "31.2%", note: "집중도 확인 필요", tone: "check" },
+        { label: "순매출÷매입액", value: "1.62×", note: "예시 산식", tone: "neutral" },
+        { label: "참여업체 판매량", value: "+14.8%", note: "전후 변화 · 인과 아님", tone: "up" },
+      ],
+      accounts: [
+        { name: "가상 거래처 A", share: 78, change: "+12.1%" },
+        { name: "가상 거래처 B", share: 61, change: "+4.6%" },
+        { name: "가상 거래처 C", share: 44, change: "−3.2%" },
+      ],
+      formula: {
+        label: "적용 산식",
+        value: "순매출 ÷ 매입액 = 1.62×",
+        note: "할인·반품·세금 포함 범위는 사용 전에 책임자가 확정",
+      },
+      promotion: {
+        before: 68,
+        after: 78.1,
+        change: "+14.8%",
+        note: "참여업체의 관찰된 변화 · 계절성·품절 영향 별도 확인",
+      },
+      checks: [
+        "거래처 코드가 연결되지 않은 판매전표 2건",
+        "반품 처리일과 판매 기준일이 다른 항목 3건",
+        "프로모션 기간 중 품절 영향 확인 필요",
+      ],
+      disclaimer: "표시된 숫자와 거래처는 화면 설명을 위한 가상 예시입니다. 실제 산식, 데이터 접근과 분석 가능 범위는 적용 환경에서 별도로 검증합니다.",
+    },
   },
   {
     slug: "business-operations",

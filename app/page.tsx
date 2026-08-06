@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { WORKER_HOST_BASELINE_SHA, WORKER_HOST_REFERENCE_DATE } from "./product-reference";
 
 type Role = {
   id: string;
@@ -15,6 +16,16 @@ type Role = {
 };
 
 const roles: Role[] = [
+  {
+    id: "data",
+    label: "Data",
+    person: "Business Owner",
+    worker: "Data Analysis Worker",
+    request: "거래처별 판매량과 수익성 변화를 분석해 줘",
+    result: "비교표 · 산식 · 증감 · 확인 항목",
+    decision: "영업 집중, 가격과 프로모션 방향을 결정합니다.",
+    accent: "violet",
+  },
   {
     id: "product",
     label: "Product",
@@ -82,8 +93,16 @@ const faqs = [
 
 const homepageCases = [
   {
-    slug: "institution-documents",
+    slug: "sales-data-analysis",
     number: "01",
+    label: "판매·수익성 분석",
+    title: "흩어진 판매·매입 데이터를, 결정할 수 있는 숫자로",
+    copy: "거래처별 판매량, 수익성 비율과 프로모션 전후 변화를 산식·근거와 함께 정리합니다.",
+    accent: "violet",
+  },
+  {
+    slug: "institution-documents",
+    number: "02",
     label: "기관 문서업무",
     title: "정해진 서식은 기준에 맞게, 서식이 없는 문서는 구조부터",
     copy: "보고서·접수 문서·회의자료를 초안, 누락 후보와 참고 근거로 정리합니다.",
@@ -91,7 +110,7 @@ const homepageCases = [
   },
   {
     slug: "business-operations",
-    number: "02",
+    number: "03",
     label: "기업 운영업무",
     title: "흩어진 운영정보를 다음 행동이 보이는 결과로",
     copy: "회의·요청·실적자료를 핵심 요약, 실행 항목과 확인 필요사항으로 구조화합니다.",
@@ -99,7 +118,7 @@ const homepageCases = [
   },
   {
     slug: "software-team",
-    number: "03",
+    number: "04",
     label: "작은 개발팀",
     title: "제품·개발·QA 역할은 유지하고 AI 실행력은 확장",
     copy: "역할자가 각자의 Worker에 독립 요청하고 요구사항·영향 분석·테스트 결과를 검토합니다.",
@@ -155,7 +174,7 @@ export default function Home() {
           <p className="eyebrow"><span /> DREAMLABS · WORKER HOST</p>
           <h1>팀의 역할은 유지하고,<br /><em>AI 실행력은 확장하세요.</em></h1>
           <p className="hero-lead">
-            기관 문서업무부터 기업 운영과 개발팀까지. 역할별 Worker가 승인된 지식과 도구로 사람의 독립 요청을 처리하고, 담당자는 검토와 결정에 집중합니다.
+            판매·수익성 분석부터 기관 문서업무, 기업 운영과 개발팀까지. 역할별 Worker가 승인된 지식과 도구로 인증된 사용자의 독립 요청을 처리하고, 담당자는 검토와 결정에 집중합니다.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#usecases">적용 사례 보기 <span aria-hidden="true">↓</span></a>
@@ -164,13 +183,23 @@ export default function Home() {
           <p className="hero-note"><span aria-hidden="true">●</span> 요청은 독립적으로 · 결과는 투명하게 · 결정은 사람에게</p>
         </div>
 
-        <div className="hero-visual" aria-label="사람의 독립 요청이 역할별 Worker와 결과로 연결되는 구조">
+        <div className="hero-visual" role="group" aria-label="사람의 독립 요청이 역할별 Worker와 결과로 연결되는 구조">
           <div className="visual-head">
             <span>사람의 요청</span>
             <span>역할별 Worker</span>
             <span>검토할 결과</span>
           </div>
           <div className="work-lane lane-product">
+            <div className="person-node">
+              <span className="avatar">BO</span>
+              <div><small>Business Owner</small><strong>판매·수익성 분석 요청</strong></div>
+            </div>
+            <Arrow />
+            <div className="worker-node"><span className="status-dot" /><small>DATA ANALYSIS WORKER</small><strong>산식·비교·이상 후보 정리</strong></div>
+            <Arrow />
+            <div className="result-node"><small>RESULT</small><strong>판매 추이 · 비율 · 확인사항</strong></div>
+          </div>
+          <div className="work-lane lane-engineering">
             <div className="person-node">
               <span className="avatar">DO</span>
               <div><small>Document Owner</small><strong>보고서 초안 요청</strong></div>
@@ -179,16 +208,6 @@ export default function Home() {
             <div className="worker-node"><span className="status-dot" /><small>DOCUMENT WORKER</small><strong>서식과 근거 정리</strong></div>
             <Arrow />
             <div className="result-node"><small>RESULT</small><strong>초안 · 누락 · 참고 근거</strong></div>
-          </div>
-          <div className="work-lane lane-engineering">
-            <div className="person-node">
-              <span className="avatar">OP</span>
-              <div><small>Operations Lead</small><strong>운영보고 정리</strong></div>
-            </div>
-            <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>OPERATIONS WORKER</small><strong>실적과 이슈 구조화</strong></div>
-            <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>요약 · 실행 항목 · 위험</strong></div>
           </div>
           <div className="work-lane lane-qa">
             <div className="person-node">
@@ -350,7 +369,7 @@ export default function Home() {
           <div className="architecture-map">
             <div className="arch-column people-column">
               <p className="arch-label">PEOPLE &amp; DECISIONS</p>
-              <div className="arch-card"><span className="mini-avatar">PL</span><div><small>Product Lead</small><strong>범위와 우선순위</strong></div></div>
+              <div className="arch-card"><span className="mini-avatar">BO</span><div><small>Business Owner</small><strong>지표와 사업 판단</strong></div></div>
               <div className="arch-card"><span className="mini-avatar">DV</span><div><small>Developer</small><strong>구현과 코드 검토</strong></div></div>
               <div className="arch-card"><span className="mini-avatar">QA</span><div><small>QA / Operator</small><strong>검증과 출시 결정</strong></div></div>
             </div>
@@ -358,7 +377,7 @@ export default function Home() {
             <div className="arch-column worker-column">
               <p className="arch-label">ROLE-BASED WORKERS</p>
               <div className="worker-stack">
-                <div className="stack-card product"><span>P</span><div><small>PRODUCT</small><strong>Product Worker</strong></div></div>
+                <div className="stack-card product"><span>D</span><div><small>DATA ANALYSIS</small><strong>Data Analysis Worker</strong></div></div>
                 <div className="stack-card engineering"><span>E</span><div><small>ENGINEERING</small><strong>Engineering Worker</strong></div></div>
                 <div className="stack-card qa"><span>Q</span><div><small>QA · RELEASE</small><strong>QA·Release Worker</strong></div></div>
               </div>
@@ -395,7 +414,7 @@ export default function Home() {
           </div>
           <p className="knowledge-note"><span aria-hidden="true">✓</span> 검색과 미리보기만으로 지식이 변경되지는 않습니다.</p>
         </div>
-        <div className="knowledge-visual" aria-label="승인된 지식이 Worker의 현재 요청에 연결되는 구조">
+          <div className="knowledge-visual" role="group" aria-label="승인된 지식이 Worker의 현재 요청에 연결되는 구조">
           <div className="knowledge-top"><span>CURRENT APPROVED KNOWLEDGE</span><small>revision-bound</small></div>
           <div className="knowledge-pages">
             <div><span>01</span><strong>제품과 서비스</strong><small>제품 설명 · 용어 · 정책</small></div>
@@ -413,7 +432,7 @@ export default function Home() {
           <h2>빠른 실행과 사람의 통제를<br />함께 설계했습니다</h2>
         </div>
         <div className="trust-grid">
-          <article><span className="trust-icon"><i /><i /></span><small>01</small><h3>독립 요청</h3><p>Worker는 사람이 보낸 요청 하나를 정해진 범위에서 처리합니다.</p></article>
+          <article><span className="trust-icon"><i /><i /></span><small>01</small><h3>독립 요청</h3><p>Worker는 인증된 사용자가 보낸 요청 하나를 정해진 범위에서 처리합니다.</p></article>
           <article><span className="trust-icon approval-icon"><i /><i /></span><small>02</small><h3>명시적인 승인</h3><p>중요한 변경과 추가 권한이 필요한 순간에는 사람의 확인을 요청합니다.</p></article>
           <article><span className="trust-icon boundary-icon"><i /><i /></span><small>03</small><h3>역할별 접근 범위</h3><p>지식, 도구와 작업 공간을 Worker의 역할과 책임에 맞게 구성합니다.</p></article>
           <article><span className="trust-icon result-icon"><i /><i /></span><small>04</small><h3>확인 가능한 결과</h3><p>적용된 기록 정책에 따라 작업 상태와 결과를 검토할 수 있도록 구성합니다.</p></article>
@@ -481,8 +500,8 @@ export default function Home() {
           <nav aria-label="푸터 메뉴"><a href="#value">제품 가치</a><a href="#roles">역할별 Worker</a><a href="#trust">신뢰 설계</a><a href="#contact">도입 문의</a></nav>
         </div>
         <div className="footer-legal">
-          <p>소개된 기능의 실제 제공 범위는 Worker별 적용 버전과 운영 상태에 따라 다를 수 있습니다. Source-only, 검증 환경과 특정 Worker 배포 상태는 구분해 확인합니다.</p>
-          <span>Prototype · Baseline 078680e</span>
+          <p>소개된 기능의 실제 제공 범위는 Worker별 적용 버전과 운영 상태에 따라 다를 수 있습니다. Source-only / Deployed / Blocked 상태를 구분해 확인합니다.</p>
+          <span>Prototype · Product reference {WORKER_HOST_BASELINE_SHA} · {WORKER_HOST_REFERENCE_DATE}</span>
         </div>
       </footer>
     </main>
