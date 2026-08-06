@@ -7,7 +7,7 @@
 ## 포함된 화면
 
 - 판매·수익성 분석·기관 문서업무·기업 운영·작은 개발팀을 함께 보여주는 Hero 구성도
-- 사례별 상세 페이지 4개
+- 15초 활용 영상·포스터·한국어 내레이션 자막을 포함한 사례별 상세 페이지 4개
 - 거래처별 판매량·수익성 산식·프로모션 변화와 확인사항을 보여주는 가상 분석 페이퍼
 - 정형·혼합형·비정형 업무의 시작 방식 비교
 - Product·Engineering·QA·Release Worker 전환
@@ -53,3 +53,4 @@ npm run build:pages
 - 실제 기능 제공 범위는 Worker별 적용 버전과 운영 상태에 따라 다를 수 있습니다.
 - Source-only / Deployed / Blocked 상태를 구분해 확인해야 합니다.
 - 기준 Worker Host repository commit SHA: `6cb8ed6e3d82adf398287e76e44aa3357e13f26b`
+- 사례 영상 콘텐츠 기준 Worker Host repository commit SHA: `5f93da1f50fdaa9bc831629d010fdda2fd181a72`
