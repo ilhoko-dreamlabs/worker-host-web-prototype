@@ -124,6 +124,17 @@ const homepageCases = [
     copy: "역할자가 각자의 Worker에 독립 요청하고 요구사항·영향 분석·테스트 결과를 검토합니다.",
     accent: "coral",
   },
+  {
+    slug: "youtube-content-operations",
+    number: "05",
+    label: "유튜브 콘텐츠 운영",
+    title: "한 편의 반응을 다음 콘텐츠 기획의 근거로",
+    copy: "기획·제작 준비·공개 후 피드백을 역할별 Worker가 정리하고, 사람이 반영할 내용을 선택해 다음 독립 요청으로 이어갑니다.",
+    accent: "coral",
+    previewLabel: "기획→피드백 순환 사례 · 영상 추후 제작",
+    ctaLabel: "순환 구조와 사례 보기",
+    wide: true,
+  },
 ];
 
 function Arrow() {
@@ -174,7 +185,7 @@ export default function Home() {
           <p className="eyebrow"><span /> DREAMLABS · WORKER HOST</p>
           <h1>팀의 역할은 유지하고,<br /><em>AI 실행력은 확장하세요.</em></h1>
           <p className="hero-lead">
-            판매·수익성 분석부터 기관 문서업무, 기업 운영과 개발팀까지. 역할별 Worker가 승인된 지식과 도구로 인증된 사용자의 독립 요청을 처리하고, 담당자는 검토와 결정에 집중합니다.
+            판매·수익성 분석부터 기관 문서업무, 기업 운영, 콘텐츠와 개발팀까지. 역할별 Worker가 승인된 지식과 도구로 인증된 사용자의 독립 요청을 처리하고, 담당자는 검토와 결정에 집중합니다.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#usecases">적용 사례 보기 <span aria-hidden="true">↓</span></a>
@@ -246,12 +257,12 @@ export default function Home() {
           </div>
           <div className="usecase-grid scenario-entry-grid">
             {homepageCases.map((item) => (
-              <Link className={`usecase-entry accent-${item.accent}`} href={`/use-cases/${item.slug}`} key={item.slug}>
-                <div><span>{item.number}</span><small>15초 사례 영상 · 실제 고객 사례 아님</small></div>
+              <Link className={`usecase-entry accent-${item.accent}${item.wide ? " is-wide" : ""}`} href={`/use-cases/${item.slug}`} key={item.slug}>
+                <div><span>{item.number}</span><small>{item.previewLabel ?? "15초 사례 영상 · 실제 고객 사례 아님"}</small></div>
                 <strong>{item.label}</strong>
                 <h3>{item.title}</h3>
                 <p>{item.copy}</p>
-                <b>15초 영상과 사례 보기 <span aria-hidden="true">↗</span></b>
+                <b>{item.ctaLabel ?? "15초 영상과 사례 보기"} <span aria-hidden="true">↗</span></b>
               </Link>
             ))}
           </div>
