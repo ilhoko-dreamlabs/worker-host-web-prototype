@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AnalysisPaper from "../../components/AnalysisPaper";
+import CaseCycleBoard from "../../components/CaseCycleBoard";
 import CaseFooter from "../../components/CaseFooter";
 import CaseHeader from "../../components/CaseHeader";
 import CaseVideoBoard from "../../components/CaseVideoBoard";
+import ContentCycleSection from "../../components/ContentCycleSection";
 import { getUseCase, useCases } from "../cases";
 
 const publishedUrl = "https://ilhoko-dreamlabs.github.io/worker-host-web-prototype/";
@@ -27,6 +29,9 @@ export async function generateMetadata({ params }: UseCasePageProps): Promise<Me
 
   const canonicalUrl = `${publishedUrl}use-cases/${item.slug}/`;
   const title = `${item.navLabel} 활용 시나리오 | Worker Host`;
+  const socialImage = item.contentCycle
+    ? { file: "og.png", width: 1731, height: 909, alt: "사람과 역할별 Worker가 연결되는 Worker Host 업무 구조" }
+    : { file: "og-v3.png", width: 1729, height: 910, alt: "역할별 Worker와 사람 중심 업무 흐름을 보여주는 Worker Host 활용 시나리오" };
 
   return {
     title,
@@ -37,13 +42,13 @@ export async function generateMetadata({ params }: UseCasePageProps): Promise<Me
       description: item.shortDescription,
       type: "website",
       url: canonicalUrl,
-      images: [{ url: `${publishedUrl}og-v3.png`, width: 1729, height: 910, alt: "판매·수익성 분석을 포함한 역할별 Worker 활용 시나리오" }],
+      images: [{ url: `${publishedUrl}${socialImage.file}`, width: socialImage.width, height: socialImage.height, alt: socialImage.alt }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: item.shortDescription,
-      images: [`${publishedUrl}og-v3.png`],
+      images: [`${publishedUrl}${socialImage.file}`],
     },
   };
 }
@@ -54,7 +59,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
 
   if (!item) notFound();
 
-  const relatedCases = useCases.filter((candidate) => candidate.slug !== item.slug);
+  const relatedCases = useCases.filter((candidate) => candidate.slug !== item.slug).slice(0, 3);
 
   return (
     <main className={`case-page case-accent-${item.accent}`}>
@@ -72,7 +77,9 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
           <p className="case-audience"><strong>이런 역할을 위해</strong><span>{item.audience}</span></p>
         </div>
 
-        <CaseVideoBoard item={item} />
+        {item.contentCycle
+          ? <CaseCycleBoard item={item} cycle={item.contentCycle} />
+          : <CaseVideoBoard item={item} />}
       </section>
 
       <section className="case-principles" aria-label="시나리오 적용 원칙">
@@ -93,28 +100,41 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
         </div>
       </section>
 
-      <section className="case-flow-section">
-        <div className="section-shell">
-          <div className="section-heading center-heading light-heading">
-            <p className="eyebrow"><span /> HUMAN-LED FLOW</p>
-            <h2>요청은 한 번에 하나씩,<br />결정은 사람에게.</h2>
+      {item.contentCycle ? (
+        <ContentCycleSection cycle={item.contentCycle} guardrail={item.guardrail} />
+      ) : (
+        <section className="case-flow-section">
+          <div className="section-shell">
+            <div className="section-heading center-heading light-heading">
+              <p className="eyebrow"><span /> HUMAN-LED FLOW</p>
+              <h2>요청은 한 번에 하나씩,<br />결정은 사람에게.</h2>
+            </div>
+            <div className="case-flow-grid">
+              {item.flow.map((step, index) => (
+                <article key={step.label}>
+                  <small>{step.label}</small><span className="case-flow-mark" aria-hidden="true">{index + 1}</span><h3>{step.title}</h3><p>{step.copy}</p>
+                  {index < item.flow.length - 1 ? <i aria-hidden="true" /> : null}
+                </article>
+              ))}
+            </div>
+            <p className="case-guardrail"><span aria-hidden="true">↳</span>{item.guardrail}</p>
           </div>
-          <div className="case-flow-grid">
-            {item.flow.map((step, index) => (
-              <article key={step.label}>
-                <small>{step.label}</small><span className="case-flow-mark" aria-hidden="true">{index + 1}</span><h3>{step.title}</h3><p>{step.copy}</p>
-                {index < item.flow.length - 1 ? <i aria-hidden="true" /> : null}
-              </article>
-            ))}
-          </div>
-          <p className="case-guardrail"><span aria-hidden="true">↳</span>{item.guardrail}</p>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="case-modes section-shell">
         <div className="section-heading split-heading">
-          <div><p className="eyebrow"><span /> STARTING POINTS</p><h2>업무 형식에 따라<br />시작점이 달라집니다.</h2></div>
-          <p>정의된 기준이 많을수록 첫 파일럿의 결과를 측정하기 쉽습니다. 기준이 없다면 구조 후보부터 사람이 함께 확정합니다.</p>
+          {item.contentCycle ? (
+            <>
+              <div><p className="eyebrow"><span /> ROLE-BASED WORKERS</p><h2>단계에 따라<br />준비하는 결과가 다릅니다.</h2></div>
+              <p>한 명의 만능 AI가 아니라, 기획·제작 준비·피드백 정리에 필요한 맥락과 결과를 역할별로 구분합니다.</p>
+            </>
+          ) : (
+            <>
+              <div><p className="eyebrow"><span /> STARTING POINTS</p><h2>업무 형식에 따라<br />시작점이 달라집니다.</h2></div>
+              <p>정의된 기준이 많을수록 첫 파일럿의 결과를 측정하기 쉽습니다. 기준이 없다면 구조 후보부터 사람이 함께 확정합니다.</p>
+            </>
+          )}
         </div>
         <div className="case-mode-grid">
           {item.modes.map((mode, index) => (

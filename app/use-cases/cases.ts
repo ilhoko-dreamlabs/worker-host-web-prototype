@@ -14,6 +14,34 @@ export type AnalysisPreviewDefinition = {
   disclaimer: string;
 };
 
+export type ContentCycleDefinition = {
+  statusLabel: string;
+  statusCopy: string;
+  center: { label: string; title: string; copy: string };
+  stages: Array<{
+    number: string;
+    phase: string;
+    title: string;
+    person: string;
+    worker: string;
+    request: string;
+    result: string;
+    decision: string;
+  }>;
+  registry: Array<{ mark: string; title: string; copy: string }>;
+  feedback: {
+    label: string;
+    title: string;
+    firstContentTitle: string;
+    firstContentMessage: string;
+    signals: string[];
+    decisions: Array<{ status: string; tone: "accept" | "keep" | "hold"; copy: string }>;
+    nextRequest: string;
+    nextChanges: string[];
+    disclaimer: string;
+  };
+};
+
 export type UseCaseDefinition = {
   slug: string;
   navLabel: string;
@@ -45,6 +73,7 @@ export type UseCaseDefinition = {
   ctaLabel: string;
   videoNarration: string[];
   analysisPreview?: AnalysisPreviewDefinition;
+  contentCycle?: ContentCycleDefinition;
 };
 
 export const useCases: UseCaseDefinition[] = [
@@ -306,6 +335,139 @@ export const useCases: UseCaseDefinition[] = [
       "요구와 변경, 테스트가 정리되고,",
       "팀이 함께 검토해 결정합니다.",
     ],
+  },
+  {
+    slug: "youtube-content-operations",
+    navLabel: "유튜브 콘텐츠 운영",
+    shortDescription: "기획부터 공개 후 피드백 반영까지, 사람의 승인과 독립 요청으로 이어지는 콘텐츠 운영 시나리오",
+    accent: "coral",
+    eyebrow: "활용 시나리오 · 유튜브 콘텐츠 운영",
+    title: ["한 편의 반응을,", "다음 기획의 근거로."],
+    lead: "콘텐츠 리드는 목표와 공개 기준을 정하고, 역할별 Worker는 승인된 자료로 기획·제작 준비·피드백 정리를 돕습니다. 각 결과는 사람이 검토하며 다음 단계는 사람의 승인 후 별도의 새 요청으로 시작합니다.",
+    audience: "콘텐츠 리드 · 마케터 · 제작 담당자 · 브랜드 책임자",
+    requestExample: "승인된 제품 자료와 지난 콘텐츠 검토 메모를 바탕으로 이번 영상의 주제와 첫 3초 메시지 후보를 준비해 줘.",
+    resultSummary: "주제 후보 · 후킹 문구 · 구성안 · 확인 근거",
+    decisionSummary: "주제 선택 · 표현 승인 · 다음 요청 여부",
+    painPoints: [
+      { title: "매번 처음부터 기획합니다", copy: "이전 콘텐츠에서 얻은 판단과 피드백이 담당자의 기억이나 대화에만 남기 쉽습니다." },
+      { title: "숫자와 댓글이 따로 남습니다", copy: "조회 지표와 댓글을 확인해도 다음 기획에서 무엇을 바꿀지 연결하기 어렵습니다." },
+      { title: "반영 이유가 기록되지 않습니다", copy: "제목과 구성이 바뀌어도 어떤 피드백을 누가 선택해 반영했는지 남기 어렵습니다." },
+    ],
+    flow: [
+      { label: "01 · PERSON", title: "목표와 기준 설정", copy: "콘텐츠 책임자가 대상 시청자, 전달 메시지와 공개 기준을 정합니다." },
+      { label: "02 · REQUEST", title: "역할별 Worker에 독립 요청", copy: "기획, 제작 준비 또는 피드백 정리에 필요한 결과를 각각 요청합니다." },
+      { label: "03 · REVIEW", title: "사람의 검토와 공개 결정", copy: "표현, 근거와 권리를 확인하고 제작·게시 여부를 담당자가 결정합니다." },
+      { label: "04 · NEW REQUEST", title: "반영 결정 후 새 기획", copy: "승인된 피드백만 선택해 다음 콘텐츠 기획을 별도의 요청으로 시작합니다." },
+    ],
+    modes: [
+      { label: "PLAN", title: "콘텐츠 기획 Worker", copy: "목표, 대상 시청자와 승인 자료를 바탕으로 주제·후킹·구성 후보를 준비", result: "주제 후보 · 핵심 근거 · 확인 질문" },
+      { label: "PRODUCE", title: "제작 준비 Worker", copy: "승인된 기획을 대본, 장면, 자막과 에셋 확인 항목으로 구체화", result: "대본 초안 · 장면표 · 자막·에셋 목록" },
+      { label: "LEARN", title: "피드백 분석 Worker", copy: "사람이 범위를 정해 제공한 반응 자료에서 반복 주제와 개선 가설을 정리", result: "반응 주제 · 해석 한계 · 개선 후보" },
+    ],
+    scenarios: [
+      { number: "01", title: "콘텐츠 기획 Worker", request: "이번 영상의 주제와 첫 3초 메시지 후보를 준비해 줘.", inputs: "콘텐츠 목표 · 대상 시청자 · 제품 자료 · 브랜드 가이드", result: "주제 후보 · 후킹 문구 · 핵심 근거 · 확인 질문", decision: "콘텐츠 리드가 주제와 표현을 승인하고 제작 준비를 새로 요청" },
+      { number: "02", title: "제작 준비 Worker", request: "승인된 기획안을 9:16 영상의 대본, 장면과 자막 구성으로 구체화해 줘.", inputs: "승인 기획안 · 사용 가능한 에셋 · 화면·표현 기준", result: "대본 초안 · 장면표 · 자막·에셋 목록 · 확인 항목", decision: "제작 담당자가 촬영·편집하고 권리와 표현을 확인한 뒤 공개 여부 결정" },
+      { number: "03", title: "피드백 분석 Worker", request: "선택해 제공한 시청 데이터와 댓글에서 반복 반응과 확인할 가설을 정리해 줘.", inputs: "범위를 정한 지표 · 댓글 발췌 · 내부 검토 의견 · KPI 정의", result: "반응 주제 · 이탈 구간 후보 · 해석의 한계 · 개선 후보", decision: "담당자가 각 후보를 채택·유지·보류하고 원인을 단정하지 않음" },
+      { number: "04", title: "다음 콘텐츠 기획 Worker", request: "승인된 피드백만 반영해 다음 영상 기획서의 변경안을 준비해 줘.", inputs: "채택된 피드백 · 유지할 메시지 · 다음 콘텐츠 목표", result: "변경 전후 · 변경 이유 · 새 후킹 문구 · 측정 가설", decision: "콘텐츠 리드가 변경안을 승인하고 다음 콘텐츠를 새 독립 요청으로 시작" },
+    ],
+    systems: [
+      { mark: "B", title: "제품·브랜드 자료", copy: "승인된 제품 설명, 표현 기준과 사용 가능한 에셋" },
+      { mark: "W", title: "기획·제작 작업공간", copy: "콘텐츠 브리프, 대본, 장면표와 검토 기록" },
+      { mark: "Y", title: "게시 채널", copy: "제작·게시 결과가 놓이는 외부 채널, 직접 연계와 변경 권한은 별도 검증" },
+      { mark: "F", title: "피드백 자료", copy: "사람이 범위를 선택해 제공한 지표, 댓글 발췌와 내부 의견" },
+    ],
+    guardrail: "Worker가 다음 Worker를 자동 호출하거나 다음 콘텐츠를 자동 시작하지 않습니다. YouTube 자동 게시·댓글 수집·실시간 분석을 현재 기능으로 주장하지 않으며, 사람의 검토와 새로운 독립 요청이 각 단계를 연결합니다.",
+    checklist: [
+      "대상 시청자와 콘텐츠 목표를 승인할 사람이 있는가?",
+      "Worker가 참고할 제품 자료와 브랜드 기준을 지정할 수 있는가?",
+      "공개 전 표현·에셋·권리를 검토할 담당자가 있는가?",
+      "분석할 지표와 댓글의 범위·개인정보를 사람이 확인할 수 있는가?",
+      "반영할 피드백을 사람이 선택하고 다음 독립 요청을 만들 수 있는가?",
+    ],
+    ctaTitle: "한 편을 더 만드는 것보다, 다음 편이 나아지는 운영 구조부터.",
+    ctaCopy: "최근 콘텐츠 한 편과 검토 가능한 피드백 자료를 선택해 기획, 승인, 제작, 공개, 피드백과 새 요청의 경계를 먼저 설계합니다.",
+    ctaLabel: "우리 콘텐츠 순환 구조 설계하기",
+    videoNarration: [],
+    contentCycle: {
+      statusLabel: "15초 활용 영상 · 추후 제작",
+      statusCopy: "영상 크레딧과 제작 방식을 확인한 뒤, 이 페이지의 순환 구조를 9:16 영상으로 추가할 예정입니다.",
+      center: {
+        label: "HUMAN CONTROL",
+        title: "콘텐츠 책임자",
+        copy: "목표 설정 · 결과 검토 · 공개 승인 · 반영 결정",
+      },
+      stages: [
+        {
+          number: "01",
+          phase: "PLAN",
+          title: "주제와 메시지 기획",
+          person: "콘텐츠 리드",
+          worker: "콘텐츠 기획 Worker",
+          request: "승인된 자료로 주제와 첫 3초 메시지 후보를 준비해 줘.",
+          result: "주제 후보 · 후킹 문구 · 구성안 · 확인 근거",
+          decision: "주제와 표현을 선택하고 제작 준비를 새로 요청",
+        },
+        {
+          number: "02",
+          phase: "PREPARE",
+          title: "대본과 장면 준비",
+          person: "제작 담당자",
+          worker: "제작 준비 Worker",
+          request: "승인된 기획을 대본, 장면과 자막 구성으로 구체화해 줘.",
+          result: "대본 초안 · 장면표 · 자막·에셋 목록",
+          decision: "촬영·편집 범위와 사용할 에셋을 확정",
+        },
+        {
+          number: "03",
+          phase: "REVIEW",
+          title: "표현 검토와 공개",
+          person: "브랜드·채널 책임자",
+          worker: "콘텐츠 QA Worker",
+          request: "공개 전 표현, 근거와 권리 확인 항목을 정리해 줘.",
+          result: "표현·출처·권리 체크리스트 · 확인 후보",
+          decision: "수정·보류·공개 여부를 직접 결정",
+        },
+        {
+          number: "04",
+          phase: "LEARN",
+          title: "반응을 다음 근거로",
+          person: "콘텐츠 리드",
+          worker: "피드백 분석 Worker",
+          request: "제공한 지표와 댓글에서 반복 반응과 개선 후보를 정리해 줘.",
+          result: "반응 주제 · 해석 한계 · 개선 후보",
+          decision: "채택·유지·보류 후 다음 기획을 새로 요청",
+        },
+      ],
+      registry: [
+        { mark: "P", title: "콘텐츠 기획 Worker", copy: "주제·후킹·구성 후보" },
+        { mark: "S", title: "제작 준비 Worker", copy: "대본·장면·자막 준비" },
+        { mark: "Q", title: "콘텐츠 QA Worker", copy: "표현·출처·권리 확인" },
+        { mark: "I", title: "피드백 분석 Worker", copy: "반응·한계·개선 후보" },
+      ],
+      feedback: {
+        label: "가상 운영 사이클 · 실제 조회수나 고객 반응 아님",
+        title: "“조금 추상적이에요”를 다음 편의 구체적인 장면으로.",
+        firstContentTitle: "첫 번째 콘텐츠 · Worker Host 소개",
+        firstContentMessage: "팀의 역할은 유지하고, AI 실행력은 확장하세요.",
+        signals: [
+          "우리 업무 어디에 넣을 수 있나요?",
+          "데이터 분석 사례가 있으면 더 쉽게 이해될 것 같아요.",
+        ],
+        decisions: [
+          { status: "채택", tone: "accept", copy: "다음 편에서 판매 데이터 분석 사례를 구체적으로 보여줌" },
+          { status: "유지", tone: "keep", copy: "역할별 Worker와 사람의 승인 원칙은 그대로 유지" },
+          { status: "보류", tone: "hold", copy: "특정 구성이 조회 성과를 높인다는 단정은 하지 않음" },
+        ],
+        nextRequest: "승인된 피드백을 반영해 ‘거래처별 판매량과 매입 대비 매출비율 분석’ 사례의 콘텐츠 기획안을 준비해 줘.",
+        nextChanges: [
+          "첫 장면에 실제 업무 요청 배치",
+          "거래처 순위·비율·확인 항목을 화면으로 제시",
+          "담당자가 근거를 확인하고 결정하는 장면으로 마무리",
+          "상세 사례 페이지에서 입력·결과·검토 조건 안내",
+        ],
+        disclaimer: "피드백을 그대로 따라가는 것이 아닙니다. 사람이 무엇을 반영할지 결정하고, Worker는 그 결정을 다음 기획의 검토 가능한 형태로 준비합니다.",
+      },
+    },
   },
 ];
 
