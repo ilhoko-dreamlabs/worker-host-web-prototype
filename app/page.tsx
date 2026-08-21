@@ -80,8 +80,8 @@ const faqs = [
     a: "네. 담당 업무, 참고 지식, 사용할 도구와 접근 범위를 역할에 맞게 구분할 수 있습니다. 실제 제공 범위는 적용 환경별로 확인합니다.",
   },
   {
-    q: "여러 Worker가 자동으로 협업하나요?",
-    a: "아닙니다. 각 Worker는 사람의 독립 요청을 처리합니다. 역할자가 결과를 검토하고 다음 요청을 명시적으로 결정합니다.",
+    q: "여러 Worker가 협업할 수 있나요?",
+    a: "역할 간 협업은 가능합니다. 다만 Worker끼리 직접 호출하거나 다음 업무를 자동 생성하지는 않습니다. 한 Worker의 결과를 사람이 검토해 다른 Worker에 새 독립 요청으로 전달할 수 있습니다. 승인된 외부 시스템을 통한 연계는 Source-only이므로 실제 제공 상태는 환경별로 확인합니다.",
   },
   {
     q: "Worker가 코드를 자동으로 배포하나요?",
@@ -202,7 +202,7 @@ export default function Home() {
           <a href="#value" onClick={closeMenu}>제품 가치</a>
           <a href="#usecases" onClick={closeMenu}>활용 사례</a>
           <a href="#roles" onClick={closeMenu}>역할별 Worker</a>
-          <a href="#architecture" onClick={closeMenu}>전체 구성</a>
+          <a href="#architecture" onClick={closeMenu}>전체 구조</a>
           <a className="nav-cta" href="#contact" onClick={closeMenu}>도입 상담</a>
         </nav>
       </header>
@@ -402,43 +402,153 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="architecture-section" id="architecture">
+      <section className="architecture-section" id="architecture" aria-labelledby="system-overview-title">
         <div className="section-shell">
           <div className="section-heading center-heading light-heading">
-            <p className="eyebrow"><span /> CONNECTED, NOT ORCHESTRATED</p>
-            <h2>사람, Worker와 운영 시스템을<br />하나의 흐름으로</h2>
-            <p>역할과 실행, 운영 변경의 책임을 분리해 AI 업무의 경계를 분명하게 만듭니다.</p>
+            <p className="eyebrow"><span /> WHOLE SYSTEM CONCEPT</p>
+            <h2 id="system-overview-title">요청이 들어오고, Worker가 실행하고,<br />사람이 결정하는 전체 구조</h2>
+            <p>독립 요청의 실행 흐름과 운영 변경의 책임을 분리해, 어디까지 AI가 처리하고 어디서 사람이 결정하는지 보여줍니다.</p>
           </div>
-          <div className="architecture-map">
-            <div className="arch-column people-column">
-              <p className="arch-label">PEOPLE &amp; DECISIONS</p>
-              <div className="arch-card"><span className="mini-avatar">BO</span><div><small>Business Owner</small><strong>지표와 사업 판단</strong></div></div>
-              <div className="arch-card"><span className="mini-avatar">DV</span><div><small>Developer</small><strong>구현과 코드 검토</strong></div></div>
-              <div className="arch-card"><span className="mini-avatar">QA</span><div><small>QA / Operator</small><strong>검증과 출시 결정</strong></div></div>
-            </div>
-            <div className="arch-bridge"><span>명시적인 요청</span><i /><span>사람의 승인</span></div>
-            <div className="arch-column worker-column">
-              <p className="arch-label">ROLE-BASED WORKERS</p>
-              <div className="worker-stack">
-                <div className="stack-card product"><WorkerAgentIcon className="stack-worker-icon" /><div><small>DATA ANALYSIS</small><strong>Data Analysis Worker</strong></div></div>
-                <div className="stack-card engineering"><WorkerAgentIcon className="stack-worker-icon" /><div><small>ENGINEERING</small><strong>Engineering Worker</strong></div></div>
-                <div className="stack-card qa"><WorkerAgentIcon className="stack-worker-icon" /><div><small>QA · RELEASE</small><strong>QA·Release Worker</strong></div></div>
+
+          <div className="system-overview" role="group" aria-label="사람의 독립 요청부터 Worker 실행과 사람의 최종 결정까지 이어지는 개념 구조">
+            <div className="system-overview-head">
+              <div>
+                <span className="system-kicker">EXECUTION FLOW</span>
+                <h3>독립 요청 하나의 실행 흐름</h3>
               </div>
+              <p><strong>NO ORCHESTRATION</strong> Worker 간 자동 호출이나 자동 후속 요청이 없습니다.</p>
             </div>
-            <div className="arch-bridge"><span>허용된 접근</span><i /><span>상태와 결과</span></div>
-            <div className="arch-column systems-column">
-              <p className="arch-label">KNOWLEDGE &amp; SYSTEMS</p>
-              <div className="system-card"><span>K</span><div><small>CONTEXT</small><strong>Runtime Knowledge</strong></div></div>
-              <div className="system-card"><span>T</span><div><small>CAPABILITY</small><strong>Approved Tools</strong></div></div>
-              <div className="system-card"><span>R</span><div><small>READBACK</small><strong>Status &amp; Evidence</strong></div></div>
+
+            <ol className="system-flow">
+              <li className="system-stage system-stage-touchpoint">
+                <span className="system-stage-number" aria-hidden="true">01</span>
+                <small>USER TOUCHPOINTS</small>
+                <h4>사람이 요청을 시작</h4>
+                <ul className="system-chip-list" aria-label="연결 가능한 사용자 접점 예시">
+                  <li>Web Console</li>
+                  <li>Chat · Mattermost</li>
+                  <li>Remote Request API · Source-only</li>
+                  <li>예약된 독립 요청</li>
+                </ul>
+                <p>연결 범위와 상태는 적용 환경별로 확인합니다.</p>
+              </li>
+
+              <li className="system-stage system-stage-request">
+                <span className="system-stage-number" aria-hidden="true">02</span>
+                <small>ONE INDEPENDENT REQUEST</small>
+                <h4>지정된 Worker에 요청을 접수</h4>
+                <p>사람 또는 연결 설정이 정한 Worker에서 요청을 인증·정규화하고 권한과 처리 상태를 고정합니다.</p>
+                <span className="system-stage-tag">Data · Product · Engineering · QA · Release</span>
+                <em>가상 역할 구성 예시 · 자동 배차 아님</em>
+              </li>
+
+              <li className="system-stage system-stage-worker">
+                <span className="system-stage-number" aria-hidden="true">03</span>
+                <WorkerAgentIcon className="system-worker-icon" />
+                <small>TARGET WORKER</small>
+                <h4>역할별 Worker가 독립 실행</h4>
+                <p>요청 해석 · 권한 확인 · 작업 상태 · 실행 제어를 지정된 Worker 안에서 처리합니다.</p>
+                <span className="system-stage-tag">이 요청에 지정된 Worker 1개</span>
+              </li>
+
+              <li className="system-stage system-stage-review">
+                <span className="system-stage-number" aria-hidden="true">04</span>
+                <small>REVIEWABLE RESULT</small>
+                <h4>결과를 사람이 검토·결정</h4>
+                <p>결과 · 근거 · 처리 상태를 확인하고 승인, 수정 또는 보류를 결정합니다.</p>
+                <span className="system-human-gate"><b>NO AUTO FOLLOW-UP</b> 결과가 다음 요청을 자동으로 만들지 않습니다.</span>
+              </li>
+            </ol>
+
+            <section className="capability-layer" aria-labelledby="capability-layer-title">
+              <div className="capability-layer-head">
+                <div>
+                  <span className="system-kicker">CONTEXT &amp; CAPABILITIES</span>
+                  <h3 id="capability-layer-title">지정된 Worker가 허용 범위 안에서 사용하는 실행 자원</h3>
+                </div>
+                <p>Worker별 격리 · 환경별 구성</p>
+              </div>
+              <ul>
+                <li><small>WORKER CONTEXT</small><strong>승인된 지식 · 작업 기록</strong><span>현재 요청에 필요한 범위만 사용</span></li>
+                <li><small>WORKSPACE</small><strong>파일 · 프로젝트 · Skills</strong><span>권한과 작업 범위 안에서 연결</span></li>
+                <li><small>AI RUNTIME</small><strong>구성된 단일 실행 환경</strong><span>공급자와 기능은 환경별 선택</span></li>
+                <li><small>TOOLS &amp; SYSTEMS</small><strong>승인된 도구 · MCP</strong><span>사내·외부 시스템은 허용된 접근만</span></li>
+              </ul>
+            </section>
+          </div>
+
+          <section className="controlled-collaboration" aria-labelledby="controlled-collaboration-title">
+            <div className="controlled-collaboration-head">
+              <div>
+                <span className="system-kicker">CONTROLLED COLLABORATION</span>
+                <h3 id="controlled-collaboration-title">독립 실행은 유지하고, 역할 간 협업은 제한된 handoff로</h3>
+              </div>
+              <span className="mixed-status-badge">NEW INDEPENDENT REQUESTS ONLY</span>
             </div>
+            <p className="controlled-collaboration-lead">각 Worker의 결과를 사람이 검토해 다른 역할 Worker의 새 요청에 포함하면 협업 흐름을 구성할 수 있습니다. Worker가 다른 Worker를 직접 호출하거나 결과가 자동으로 다음 업무를 시작하지는 않습니다.</p>
+
+            <div className="collaboration-route" role="group" aria-label="첫 번째 Worker의 결과를 사람이 검토한 뒤 두 번째 Worker에 새 독립 요청으로 전달하는 제한된 협업 구조">
+              <article className="collaboration-worker-card">
+                <WorkerAgentIcon className="collaboration-worker-icon" />
+                <small>ROLE WORKER A · 구성 예</small>
+                <strong>Product Worker의 결과</strong>
+                <p>요구사항 범위 · 수용 기준 · 확인 항목</p>
+              </article>
+              <div className="collaboration-connector" aria-hidden="true"><span>RESULT</span><i /></div>
+              <article className="collaboration-gate-card">
+                <small>REVIEW &amp; HANDOFF</small>
+                <strong>다음 역할로 전달할지 결정</strong>
+                <p>검토된 결과 중 필요한 범위만 선택해 새로운 요청을 만듭니다.</p>
+                <div className="collaboration-modes">
+                  <span><b>기본</b> 사람의 검토와 전달</span>
+                  <span><b>연동 옵션</b> 승인된 외부 업무 시스템 <em>Source-only · 환경별 검증</em></span>
+                </div>
+              </article>
+              <div className="collaboration-connector" aria-hidden="true"><span>NEW REQUEST</span><i /></div>
+              <article className="collaboration-worker-card">
+                <WorkerAgentIcon className="collaboration-worker-icon" />
+                <small>ROLE WORKER B · 구성 예</small>
+                <strong>Engineering·QA Worker 실행</strong>
+                <p>새 요청 ID · 별도 권한 · 독립된 처리 상태</p>
+              </article>
+            </div>
+
+            <p className="controlled-collaboration-rule"><strong>제한 범주</strong> 외부 업무 시스템은 Worker Host 밖에서 인증된 독립 요청만 조정합니다. Worker 간 직접 호출, 결과 기반 자동 후속 실행과 공유 워크플로 엔진은 포함하지 않습니다.</p>
+          </section>
+
+          <section className="operations-plane" aria-labelledby="operations-plane-title">
+            <div className="operations-plane-head">
+              <div>
+                <span className="system-kicker">OPERATIONS PLANE</span>
+                <h3 id="operations-plane-title">실행 흐름과 분리된 운영·업데이트 경계</h3>
+              </div>
+              <span className="mixed-status-badge">MIXED STATUS · VERIFY BY ENVIRONMENT</span>
+            </div>
+            <ul>
+              <li className="operations-registry-card">
+                <WorkerHostSymbol className="operations-registry-symbol" />
+                <div><small>REFERENCE · NOT A DISPATCHER</small><strong>Worker Registry</strong><p>역할·이미지·버전·상태를 별도 운영 경계에서 참조</p><span className="architecture-state state-source">SOURCE-ONLY · RUNTIME UNVERIFIED</span></div>
+              </li>
+              <li><small>SOURCE · REVIEW · BUILD</small><strong>검증 기준 Worker Release</strong><p>소스, 검증 결과와 immutable 이미지의 기준을 관리</p><span className="architecture-state state-source">SOURCE-ONLY</span></li>
+              <li><small>SITE-LOCAL UPDATE</small><strong>Worker Update Manager</strong><p>사용자 또는 승인 정책이 만든 요청만 해당 사이트에서 처리</p><span className="architecture-state state-deployed">DEPLOYED · SPECIFIC ENV</span></li>
+              <li><small>CUSTOMER RUNTIME</small><strong>Portainer · Docker 환경</strong><p>지정된 Worker를 독립 실행하고 운영 변경을 분리</p><span className="architecture-state state-deployed">DEPLOYED · DIRECT-TEST</span></li>
+              <li><small>PER-WORKER BOUNDARY</small><strong>독립 데이터 · 인증 · 상태</strong><p>보존 여부는 Release와 환경별 검증 결과로 확인</p><span className="architecture-state state-verify">VERIFY BY RELEASE</span></li>
+            </ul>
+            <p className="operations-plane-note"><strong>이 개념도가 모든 구성의 배포를 뜻하지는 않습니다.</strong> Registry는 요청을 자동 배차하거나 Worker를 지휘하지 않으며, Manager가 구성된 환경에서는 해당 사이트의 Manager가 업데이트 실행을 담당합니다.</p>
+          </section>
+
+          <ul className="architecture-principles" aria-label="전체 시스템 구조의 다섯 가지 원칙">
+            <li><small>01</small><strong>독립 요청</strong><span>한 요청은 한 실행 단위로 처리</span></li>
+            <li><small>02</small><strong>승인된 맥락</strong><span>Worker별 지식과 작업 범위 유지</span></li>
+            <li><small>03</small><strong>통제된 handoff</strong><span>검토 후 다른 역할에 새 요청</span></li>
+            <li><small>04</small><strong>운영 변경 분리</strong><span>배포·업데이트 권한은 별도 경계</span></li>
+            <li><small>05</small><strong>사람의 최종 결정</strong><span>결과 검토 후 다음 요청을 선택</span></li>
+          </ul>
+
+          <div className="architecture-reference">
+            <p><strong>상태 읽는 법</strong> Source-only는 소스에만 존재하고, Deployed는 특정 환경의 배포 근거가 있으며, Blocked는 확인된 제한이 남아 있음을 뜻합니다. 실제 상태는 기능·환경·특정 Worker별로 구분합니다.</p>
+            <span>Product reference · {WORKER_HOST_BASELINE_SHA} · {WORKER_HOST_REFERENCE_DATE}</span>
           </div>
-          <div className="operations-rail">
-            <div className="registry-reference-card"><WorkerHostSymbol className="registry-reference-symbol" /><span><small>OPTIONAL REFERENCE</small><strong>Worker Registry</strong><p>역할 후보 · 이미지 · inventory · desired state 조회</p></span></div>
-            <div><small>SOURCE · REVIEW · BUILD</small><strong>GitLab / CI</strong><p>소스와 검증 결과를 확인</p></div>
-            <div><small>APPROVED APPLY</small><strong>Portainer 실행 경계</strong><p>승인된 운영 변경만 별도 수행</p></div>
-          </div>
-          <p className="operations-note"><strong>Registry는 자동 배차나 Worker 간 지휘를 수행하지 않습니다.</strong> 운영 시스템은 Worker 실행과 분리되며, Source·검증 환경·특정 Worker의 배포 상태를 구분합니다.</p>
         </div>
       </section>
 
