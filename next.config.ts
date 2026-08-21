@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
+    remotePatterns: [
+      new URL("https://assets.dreamlabs.co.kr/brand/worker-host/**"),
+      new URL("https://assets.dreamlabs.co.kr/agents/dreamlabs-worker/**"),
+    ],
   },
   basePath: githubPagesBasePath,
   assetPrefix: githubPagesBasePath,

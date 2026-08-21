@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { type KeyboardEvent, useState } from "react";
+import { WorkerAgentIcon, WorkerHostLogo, WorkerHostSymbol } from "./components/BrandAssets";
 import { WORKER_HOST_BASELINE_SHA, WORKER_HOST_REFERENCE_DATE } from "./product-reference";
 
 type Role = {
@@ -99,6 +101,7 @@ const homepageCases = [
     title: "흩어진 판매·매입 데이터를, 결정할 수 있는 숫자로",
     copy: "거래처별 판매량, 수익성 비율과 프로모션 전후 변화를 산식·근거와 함께 정리합니다.",
     accent: "violet",
+    poster: "/media/use-cases/sales-data-analysis/poster.jpg",
   },
   {
     slug: "institution-documents",
@@ -107,6 +110,7 @@ const homepageCases = [
     title: "정해진 서식은 기준에 맞게, 서식이 없는 문서는 구조부터",
     copy: "보고서·접수 문서·회의자료를 초안, 누락 후보와 참고 근거로 정리합니다.",
     accent: "blue",
+    poster: "/media/use-cases/institution-documents/poster.jpg",
   },
   {
     slug: "business-operations",
@@ -115,6 +119,7 @@ const homepageCases = [
     title: "흩어진 운영정보를 다음 행동이 보이는 결과로",
     copy: "회의·요청·실적자료를 핵심 요약, 실행 항목과 확인 필요사항으로 구조화합니다.",
     accent: "mint",
+    poster: "/media/use-cases/business-operations/poster.jpg",
   },
   {
     slug: "software-team",
@@ -123,6 +128,7 @@ const homepageCases = [
     title: "제품·개발·QA 역할은 유지하고 AI 실행력은 확장",
     copy: "역할자가 각자의 Worker에 독립 요청하고 요구사항·영향 분석·테스트 결과를 검토합니다.",
     accent: "coral",
+    poster: "/media/use-cases/software-team/poster.jpg",
   },
   {
     slug: "youtube-content-operations",
@@ -137,17 +143,42 @@ const homepageCases = [
   },
 ];
 
-function Arrow() {
+function FlowArrow({ label }: { label: string }) {
   return (
-    <span className="lane-arrow" aria-hidden="true">
-      <span />
-    </span>
+    <div className="hero-flow-arrow" aria-hidden="true">
+      <span>{label}</span><i />
+    </div>
   );
 }
 
 export default function Home() {
   const [activeRole, setActiveRole] = useState(roles[0]);
+
+  const handleRoleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    currentIndex: number,
+  ) => {
+    let nextIndex: number | null = null;
+
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % roles.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + roles.length) % roles.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = roles.length - 1;
+    }
+
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    const nextRole = roles[nextIndex];
+    setActiveRole(nextRole);
+    document.getElementById(`role-tab-${nextRole.id}`)?.focus();
+  };
   const [menuOpen, setMenuOpen] = useState(false);
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -155,11 +186,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Worker Host 홈" onClick={closeMenu}>
-          <span className="brand-mark" aria-hidden="true">W</span>
-          <span>
-            <strong>WORKER HOST</strong>
-            <small>DREAMLABS</small>
-          </span>
+          <WorkerHostLogo variant="white" className="brand-logo" preload />
         </a>
         <button
           className="menu-button"
@@ -180,62 +207,39 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="hero section-shell" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow"><span /> DREAMLABS · WORKER HOST</p>
-          <h1>팀의 역할은 유지하고,<br /><em>AI 실행력은 확장하세요.</em></h1>
-          <p className="hero-lead">
-            판매·수익성 분석부터 기관 문서업무, 기업 운영, 콘텐츠와 개발팀까지. 역할별 Worker가 승인된 지식과 도구로 인증된 사용자의 독립 요청을 처리하고, 담당자는 검토와 결정에 집중합니다.
-          </p>
-          <div className="hero-actions">
-            <a className="button button-primary" href="#usecases">적용 사례 보기 <span aria-hidden="true">↓</span></a>
-            <a className="button button-secondary" href="#how">작동 방식 보기 <span aria-hidden="true">↓</span></a>
+      <section className="hero" id="top">
+        <div className="section-shell hero-layout">
+          <div className="hero-copy">
+            <p className="eyebrow"><span /> DREAMLABS · WORKER HOST</p>
+            <h1>팀의 역할은 유지하고,<br /><em>AI 실행력은 확장하세요.</em></h1>
+            <p className="hero-lead">
+              반복 업무를 역할별 Worker에 맡기고, 팀은 검토와 결정에 집중하세요. 각 Worker는 허용된 지식과 도구로 인증된 사용자의 독립 요청 하나를 처리합니다.
+            </p>
+            <div className="hero-actions">
+              <a className="button button-primary" href="#usecases">내 업무와 닮은 사례 보기 <span aria-hidden="true">↓</span></a>
+              <a className="button button-secondary" href="#how">작동 방식 확인하기 <span aria-hidden="true">↓</span></a>
+            </div>
+            <p className="hero-note"><span aria-hidden="true">●</span> 요청은 독립적으로 · 결과는 검토 가능하게 · 결정은 사람에게</p>
           </div>
-          <p className="hero-note"><span aria-hidden="true">●</span> 요청은 독립적으로 · 결과는 투명하게 · 결정은 사람에게</p>
-        </div>
 
-        <div className="hero-visual" role="group" aria-label="사람의 독립 요청이 역할별 Worker와 결과로 연결되는 구조">
-          <div className="visual-head">
-            <span>사람의 요청</span>
-            <span>역할별 Worker</span>
-            <span>검토할 결과</span>
-          </div>
-          <div className="work-lane lane-product">
-            <div className="person-node">
-              <span className="avatar">BO</span>
-              <div><small>Business Owner</small><strong>판매·수익성 분석 요청</strong></div>
+          <div className="hero-visual" role="group" aria-label="사람의 독립 요청을 역할별 Worker가 처리하고 결과를 사람이 검토하는 구조">
+            <div className="hero-visual-head"><span>ROLE-BASED EXECUTION</span><small>HUMAN-GATED</small></div>
+            <div className="hero-flow">
+              <div className="hero-person">
+                <span>PL</span><small>Product Lead</small><strong>독립 요청</strong>
+              </div>
+              <FlowArrow label="REQUEST" />
+              <div className="hero-worker">
+                <WorkerAgentIcon className="hero-worker-icon" />
+                <div><small>PRODUCT WORKER</small><strong>허용된 맥락으로 처리</strong><p><span>Knowledge</span><span>Tools</span></p></div>
+              </div>
+              <FlowArrow label="RESULT" />
+              <div className="hero-result">
+                <small>REVIEWABLE RESULT</small><strong>범위 · 근거 · 확인 항목</strong><span>사람이 승인·수정·보류</span>
+              </div>
             </div>
-            <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>DATA ANALYSIS WORKER</small><strong>산식·비교·이상 후보 정리</strong></div>
-            <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>판매 추이 · 비율 · 확인사항</strong></div>
+            <div className="hero-gate"><span>HUMAN CONTROL</span> 다음 단계가 필요하면 사람이 새로운 독립 요청을 만듭니다.</div>
           </div>
-          <div className="work-lane lane-engineering">
-            <div className="person-node">
-              <span className="avatar">DO</span>
-              <div><small>Document Owner</small><strong>보고서 초안 요청</strong></div>
-            </div>
-            <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>DOCUMENT WORKER</small><strong>서식과 근거 정리</strong></div>
-            <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>초안 · 누락 · 참고 근거</strong></div>
-          </div>
-          <div className="work-lane lane-qa">
-            <div className="person-node">
-              <span className="avatar">DV</span>
-              <div><small>Developer / QA</small><strong>변경과 테스트 검토</strong></div>
-            </div>
-            <Arrow />
-            <div className="worker-node"><span className="status-dot" /><small>ENGINEERING WORKER</small><strong>영향과 검증 준비</strong></div>
-            <Arrow />
-            <div className="result-node"><small>RESULT</small><strong>변경 제안 · 테스트 결과</strong></div>
-          </div>
-          <div className="system-rail">
-            <span><i className="system-icon">K</i> Runtime Knowledge</span>
-            <span><i className="system-icon">T</i> Approved Tools</span>
-            <span><i className="system-icon">R</i> Status &amp; Readback</span>
-          </div>
-          <p className="visual-caption"><span /> 가상 역할 구성 예시 · Worker 간 자동 연결 없이 역할자가 다음 단계를 결정합니다.</p>
         </div>
       </section>
 
@@ -258,11 +262,29 @@ export default function Home() {
           <div className="usecase-grid scenario-entry-grid">
             {homepageCases.map((item) => (
               <Link className={`usecase-entry accent-${item.accent}${item.wide ? " is-wide" : ""}`} href={`/use-cases/${item.slug}`} key={item.slug}>
-                <div><span>{item.number}</span><small>{item.previewLabel ?? "15초 사례 영상 · 실제 고객 사례 아님"}</small></div>
-                <strong>{item.label}</strong>
-                <h3>{item.title}</h3>
-                <p>{item.copy}</p>
-                <b>{item.ctaLabel ?? "15초 영상과 사례 보기"} <span aria-hidden="true">↗</span></b>
+                <div className="usecase-entry-media">
+                  {"poster" in item ? (
+                    <Image
+                      src={`${basePath}${item.poster}`}
+                      alt={`${item.label} 가상 시나리오 포스터`}
+                      fill
+                      sizes="(max-width: 560px) 34vw, (max-width: 1100px) 24vw, 190px"
+                    />
+                  ) : (
+                    <div className="usecase-cycle-thumb" aria-label="사람의 결정을 중심으로 기획, 제작 준비, 공개와 피드백 분석이 이어지는 구조">
+                      <span className="cycle-thumb-center">HUMAN<br />CONTROL</span>
+                      <span>기획</span><span>제작 준비</span><span>공개</span><span>피드백</span>
+                    </div>
+                  )}
+                  <span className="usecase-entry-number">{item.number}</span>
+                </div>
+                <div className="usecase-entry-body">
+                  <div className="usecase-entry-meta"><span>가상 적용 시나리오</span><small>{item.previewLabel ?? "15초 사례 영상"}</small></div>
+                  <strong>{item.label}</strong>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                  <b>{item.ctaLabel ?? "15초 영상과 사례 보기"} <span aria-hidden="true">↗</span></b>
+                </div>
               </Link>
             ))}
           </div>
@@ -334,20 +356,30 @@ export default function Home() {
           <p>각 역할에 필요한 업무 지식, 도구와 접근 범위를 구분하고 사람의 책임 구조에 맞춰 구성합니다.</p>
         </div>
         <div className="role-tabs" role="tablist" aria-label="역할별 Worker 선택">
-          {roles.map((role) => (
+          {roles.map((role, index) => (
             <button
               type="button"
               role="tab"
+              id={`role-tab-${role.id}`}
+              aria-controls={`role-panel-${role.id}`}
               aria-selected={activeRole.id === role.id}
+              tabIndex={activeRole.id === role.id ? 0 : -1}
               className={activeRole.id === role.id ? "is-active" : ""}
               key={role.id}
               onClick={() => setActiveRole(role)}
+              onKeyDown={(event) => handleRoleTabKeyDown(event, index)}
             >
               <span>{role.label.slice(0, 2).toUpperCase()}</span>{role.label}
             </button>
           ))}
         </div>
-        <div className={`role-detail accent-${activeRole.accent}`} role="tabpanel" aria-live="polite">
+        <div
+          className={`role-detail accent-${activeRole.accent}`}
+          role="tabpanel"
+          id={`role-panel-${activeRole.id}`}
+          aria-labelledby={`role-tab-${activeRole.id}`}
+          tabIndex={0}
+        >
           <div className="role-person">
             <p>ROLE OWNER</p>
             <span className="role-avatar">{activeRole.person.split(" ").map((word) => word[0]).join("").slice(0, 2)}</span>
@@ -357,9 +389,9 @@ export default function Home() {
           <div className="role-arrow" aria-hidden="true"><span>REQUEST</span><i /></div>
           <div className="role-worker">
             <p>ROLE-BASED AI</p>
-            <span className="role-orbit" aria-hidden="true"><i /><b>W</b></span>
+            <span className="role-orbit" aria-hidden="true"><i /><WorkerAgentIcon className="role-worker-icon" /></span>
             <h3>{activeRole.worker}</h3>
-            <div className="role-resources"><span>Knowledge</span><span>Tools</span><span>Adapter</span></div>
+            <div className="role-resources"><span>Knowledge</span><span>Approved Tools</span></div>
           </div>
           <div className="role-arrow" aria-hidden="true"><span>RESULT</span><i /></div>
           <div className="role-result">
@@ -388,9 +420,9 @@ export default function Home() {
             <div className="arch-column worker-column">
               <p className="arch-label">ROLE-BASED WORKERS</p>
               <div className="worker-stack">
-                <div className="stack-card product"><span>D</span><div><small>DATA ANALYSIS</small><strong>Data Analysis Worker</strong></div></div>
-                <div className="stack-card engineering"><span>E</span><div><small>ENGINEERING</small><strong>Engineering Worker</strong></div></div>
-                <div className="stack-card qa"><span>Q</span><div><small>QA · RELEASE</small><strong>QA·Release Worker</strong></div></div>
+                <div className="stack-card product"><WorkerAgentIcon className="stack-worker-icon" /><div><small>DATA ANALYSIS</small><strong>Data Analysis Worker</strong></div></div>
+                <div className="stack-card engineering"><WorkerAgentIcon className="stack-worker-icon" /><div><small>ENGINEERING</small><strong>Engineering Worker</strong></div></div>
+                <div className="stack-card qa"><WorkerAgentIcon className="stack-worker-icon" /><div><small>QA · RELEASE</small><strong>QA·Release Worker</strong></div></div>
               </div>
             </div>
             <div className="arch-bridge"><span>허용된 접근</span><i /><span>상태와 결과</span></div>
@@ -402,13 +434,11 @@ export default function Home() {
             </div>
           </div>
           <div className="operations-rail">
-            <div><small>INVENTORY · DESIRED STATE</small><strong>Worker Registry</strong></div>
-            <span aria-hidden="true">↔</span>
-            <div><small>SOURCE · REVIEW · BUILD</small><strong>GitLab / CI</strong></div>
-            <span aria-hidden="true">↔</span>
-            <div><small>APPROVED APPLY</small><strong>Portainer 실행 경계</strong></div>
+            <div className="registry-reference-card"><WorkerHostSymbol className="registry-reference-symbol" /><span><small>OPTIONAL REFERENCE</small><strong>Worker Registry</strong><p>역할 후보 · 이미지 · inventory · desired state 조회</p></span></div>
+            <div><small>SOURCE · REVIEW · BUILD</small><strong>GitLab / CI</strong><p>소스와 검증 결과를 확인</p></div>
+            <div><small>APPROVED APPLY</small><strong>Portainer 실행 경계</strong><p>승인된 운영 변경만 별도 수행</p></div>
           </div>
-          <p className="operations-note">운영 시스템은 Worker 실행과 분리됩니다. Registry 정보만으로 실제 배포를 의미하지 않으며, Source·검증 환경·특정 Worker의 배포 상태를 구분합니다.</p>
+          <p className="operations-note"><strong>Registry는 자동 배차나 Worker 간 지휘를 수행하지 않습니다.</strong> 운영 시스템은 Worker 실행과 분리되며, Source·검증 환경·특정 Worker의 배포 상태를 구분합니다.</p>
         </div>
       </section>
 
@@ -504,8 +534,7 @@ export default function Home() {
       <footer>
         <div className="footer-main">
           <a className="brand footer-brand" href="#top" aria-label="Worker Host 홈">
-            <span className="brand-mark" aria-hidden="true">W</span>
-            <span><strong>WORKER HOST</strong><small>DREAMLABS</small></span>
+            <WorkerHostLogo variant="white" className="footer-brand-logo" />
           </a>
           <p>역할별 AI Worker로 팀의 실행력을 확장하는 로컬 AI 실행 기반.</p>
           <nav aria-label="푸터 메뉴"><a href="#value">제품 가치</a><a href="#roles">역할별 Worker</a><a href="#trust">신뢰 설계</a><a href="#contact">도입 문의</a></nav>

@@ -15,7 +15,7 @@ export default function CaseCycleBoard({ item, cycle }: CaseCycleBoardProps) {
     <section className="case-hero-board case-cycle-board" aria-labelledby={titleId}>
       <div className="scenario-label">
         <span>사람 중심 콘텐츠 학습 순환</span>
-        <small>가상 적용 시나리오 · 실제 고객 사례 아님</small>
+        <small>가상 적용 시나리오 · 실제 고객 사례 아님 · 기능 상태는 환경별 별도 검증</small>
       </div>
 
       <div className="case-cycle-heading">
@@ -52,7 +52,7 @@ export default function CaseCycleBoard({ item, cycle }: CaseCycleBoardProps) {
         <blockquote>“{item.requestExample}”</blockquote>
         <div>
           <span><small>WORKER RESULT</small><strong>{item.resultSummary}</strong></span>
-          <span><small>HUMAN DECISION</small><strong>{item.decisionSummary}</strong></span>
+          <span><small>HUMAN REVIEW · DECISION</small><strong>{item.decisionSummary}</strong></span>
         </div>
       </div>
 

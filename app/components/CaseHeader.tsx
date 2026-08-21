@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { WorkerHostLogo } from "./BrandAssets";
 
 export default function CaseHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,11 +11,7 @@ export default function CaseHeader() {
   return (
     <header className="site-header case-site-header">
       <Link className="brand" href="/" aria-label="Worker Host 홈" onClick={closeMenu}>
-        <span className="brand-mark" aria-hidden="true">W</span>
-        <span>
-          <strong>WORKER HOST</strong>
-          <small>DREAMLABS</small>
-        </span>
+        <WorkerHostLogo variant="white" className="brand-logo" preload />
       </Link>
       <button
         className="menu-button"
