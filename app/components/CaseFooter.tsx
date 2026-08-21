@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WorkerHostLogo } from "./BrandAssets";
 import { WORKER_HOST_BASELINE_SHA, WORKER_HOST_REFERENCE_DATE } from "../product-reference";
 import { useCases } from "../use-cases/cases";
 
@@ -7,8 +8,7 @@ export default function CaseFooter() {
     <footer>
       <div className="footer-main">
         <Link className="brand footer-brand" href="/" aria-label="Worker Host 홈">
-          <span className="brand-mark" aria-hidden="true">W</span>
-          <span><strong>WORKER HOST</strong><small>DREAMLABS</small></span>
+          <WorkerHostLogo variant="white" className="footer-brand-logo" />
         </Link>
         <p>역할별 AI Worker로 승인된 업무 데이터를 사람이 검토하고 결정할 수 있는 결과로 연결합니다.</p>
         <nav aria-label="활용 사례">

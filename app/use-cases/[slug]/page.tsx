@@ -83,7 +83,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
       </section>
 
       <section className="case-principles" aria-label="시나리오 적용 원칙">
-        <span>독립 요청</span><span>승인된 지식과 도구</span><span>검토 가능한 결과</span><span>사람의 최종 결정</span>
+        <span>독립 요청</span><span>승인된 지식과 도구</span><span>검토 가능한 결과</span><span>사람의 검토와 최종 결정</span>
       </section>
 
       {item.analysisPreview ? <AnalysisPaper preview={item.analysisPreview} /> : null}
@@ -157,7 +157,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                 <dl>
                   <div><dt>승인된 입력</dt><dd>{scenario.inputs}</dd></div>
                   <div><dt>Worker 결과</dt><dd>{scenario.result}</dd></div>
-                  <div><dt>사람의 결정</dt><dd>{scenario.decision}</dd></div>
+                  <div><dt>사람의 검토·결정</dt><dd>{scenario.decision}</dd></div>
                 </dl>
               </article>
             ))}

@@ -22,7 +22,7 @@ export default function CaseVideoBoard({ item }: CaseVideoBoardProps) {
     <section className="case-hero-board case-video-board" aria-labelledby={titleId}>
       <div className="scenario-label">
         <span>15초 활용 시나리오</span>
-        <small>연출된 가상 사례 · 실제 고객 사례 아님</small>
+        <small>연출된 가상 사례 · 실제 고객 사례 아님 · 기능 상태는 환경별 별도 검증</small>
       </div>
 
       <div className="case-video-board-layout">
@@ -68,7 +68,7 @@ export default function CaseVideoBoard({ item }: CaseVideoBoardProps) {
           <div className="case-board-arrow" aria-hidden="true"><span>Worker 처리</span><i /></div>
           <div className="case-result-card">
             <div><small>REVIEWABLE RESULT</small><strong>{item.resultSummary}</strong></div>
-            <div><small>HUMAN DECISION</small><strong>{item.decisionSummary}</strong></div>
+            <div><small>HUMAN REVIEW · DECISION</small><strong>{item.decisionSummary}</strong></div>
           </div>
           <p className="case-board-note"><span aria-hidden="true">●</span> Worker 간 자동 지휘 없이, 담당자가 다음 단계를 결정합니다.</p>
 
