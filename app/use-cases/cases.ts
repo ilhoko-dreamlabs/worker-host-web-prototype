@@ -1,5 +1,15 @@
 export type UseCaseAccent = "blue" | "mint" | "coral" | "violet";
 
+export type VideoCueTone = "problem" | "organize" | "check" | "decision";
+
+export type VideoCueDefinition = {
+  start: number;
+  end: number;
+  stage: string;
+  tone: VideoCueTone;
+  lines: [string, string];
+};
+
 export const WORKER_HOST_VIDEO_REFERENCE_SHA = "5f93da1f50fdaa9bc831629d010fdda2fd181a72";
 
 export type AnalysisPreviewDefinition = {
@@ -72,6 +82,7 @@ export type UseCaseDefinition = {
   ctaCopy: string;
   ctaLabel: string;
   videoNarration: string[];
+  videoCues?: VideoCueDefinition[];
   analysisPreview?: AnalysisPreviewDefinition;
   contentCycle?: ContentCycleDefinition;
 };
@@ -127,10 +138,16 @@ export const useCases: UseCaseDefinition[] = [
     ctaCopy: "문서 한 종류와 담당자 한 명부터 시작해 초안 품질, 누락 항목과 검토 시간을 확인합니다.",
     ctaLabel: "문서업무 적용 가능성 검토하기",
     videoNarration: [
-      "하나의 서식, 제각각인 자료.",
-      "문서 워커가 항목과 누락을 정리합니다.",
-      "검토할 근거가 화면에 보이고,",
-      "담당자는 확인한 뒤 제출을 결정합니다.",
+      "정해진 서식, 제각각인 자료.",
+      "승인 기준으로 Worker에게 요청.",
+      "초안과 누락, 근거까지 정리.",
+      "검토와 결정은 사람이 합니다.",
+    ],
+    videoCues: [
+      { start: 1.44, end: 4.02, stage: "문제", tone: "problem", lines: ["정해진 서식,", "자료는 제각각"] },
+      { start: 4.46, end: 6.60, stage: "정리", tone: "organize", lines: ["승인 기준으로", "Worker에게 요청"] },
+      { start: 7.08, end: 9.24, stage: "확인", tone: "check", lines: ["초안·누락 후보", "근거까지 정리"] },
+      { start: 9.40, end: 11.09, stage: "결정", tone: "decision", lines: ["검토와 결정은", "사람이"] },
     ],
   },
   {
@@ -185,10 +202,16 @@ export const useCases: UseCaseDefinition[] = [
     ctaCopy: "거래처별 판매량처럼 질문과 산식이 분명한 분석 하나를 선택해 자료 취합 시간, 누락과 사람의 검토 항목을 파일럿에서 측정합니다.",
     ctaLabel: "우리 데이터의 적용 조건 확인하기",
     videoNarration: [
-      "흩어져 있던 판매와 매입 자료.",
-      "워커가 승인 데이터를 한 화면에 모읍니다.",
-      "변화와 수익 흐름이 선명해지고,",
-      "담당자는 보이는 근거로 다음 결정을 내립니다.",
+      "흩어진 판매와 매입 데이터.",
+      "Worker가 승인 자료를 정리합니다.",
+      "수익성과 변화를 한눈에.",
+      "근거를 보고, 사람이 결정합니다.",
+    ],
+    videoCues: [
+      { start: 1.60, end: 3.95, stage: "문제", tone: "problem", lines: ["매출·매입 데이터가", "흩어져 있습니다"] },
+      { start: 4.00, end: 6.28, stage: "정리", tone: "organize", lines: ["승인된 자료만", "Worker가 정리"] },
+      { start: 6.76, end: 8.44, stage: "확인", tone: "check", lines: ["수익성과 변화", "한눈에"] },
+      { start: 8.44, end: 10.93, stage: "결정", tone: "decision", lines: ["근거를 보고,", "사람이 결정"] },
     ],
     analysisPreview: {
       label: "가상 분석 페이퍼 · 실제 고객 데이터 아님",
@@ -274,10 +297,16 @@ export const useCases: UseCaseDefinition[] = [
     ctaCopy: "반복되는 보고나 회의 후속 업무 하나를 선택해 입력자료와 사람의 결정 지점을 먼저 정의합니다.",
     ctaLabel: "첫 운영업무 Worker 검토하기",
     videoNarration: [
-      "쌓여 가는 요청과 일정.",
-      "운영 워커가 담당자와 기한을 한 화면에 모읍니다.",
-      "위험 신호와 우선순위가 보이면,",
-      "담당자는 필요한 조치를 선택합니다.",
+      "흩어진 요청과 지표.",
+      "승인 자료만 Worker가 처리합니다.",
+      "담당자와 기한, 위험을 한눈에.",
+      "결정은 사람이 합니다.",
+    ],
+    videoCues: [
+      { start: 4.10, end: 6.22, stage: "문제", tone: "problem", lines: ["요청과 지표가", "흩어져 있습니다"] },
+      { start: 6.90, end: 8.80, stage: "정리", tone: "organize", lines: ["승인된 범위의 자료", "Worker가 정리"] },
+      { start: 9.32, end: 11.58, stage: "확인", tone: "check", lines: ["담당자·기한·위험 후보", "한눈에"] },
+      { start: 11.58, end: 13.22, stage: "결정", tone: "decision", lines: ["결정은", "사람이"] },
     ],
   },
   {
@@ -330,10 +359,16 @@ export const useCases: UseCaseDefinition[] = [
     ctaCopy: "요구사항 정리, 코드 영향 분석 또는 테스트 준비 중 하나를 첫 역할별 Worker 후보로 선택합니다.",
     ctaLabel: "우리 팀의 첫 역할별 Worker 설계하기",
     videoNarration: [
-      "제품, 개발, 품질. 역할은 그대로.",
-      "각자 워커에 직접 요청합니다.",
-      "요구와 변경, 테스트가 정리되고,",
-      "팀이 함께 검토해 결정합니다.",
+      "작은 팀, 역할은 그대로.",
+      "각자 Worker에게 직접 요청.",
+      "요구와 변경, 테스트 근거까지.",
+      "검토하고, 사람이 결정합니다.",
+    ],
+    videoCues: [
+      { start: 1.63, end: 3.42, stage: "문제", tone: "problem", lines: ["작은 팀, 역할은", "그대로"] },
+      { start: 3.42, end: 5.80, stage: "정리", tone: "organize", lines: ["각자 Worker에게", "직접 요청"] },
+      { start: 6.21, end: 8.39, stage: "확인", tone: "check", lines: ["요구·변경 영향", "테스트 근거까지"] },
+      { start: 8.39, end: 10.92, stage: "결정", tone: "decision", lines: ["검토하고,", "사람이 결정"] },
     ],
   },
   {
