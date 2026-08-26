@@ -76,6 +76,10 @@ const faqs = [
     a: "대화만 남기는 것이 아니라 역할별 지식과 도구, 요청 상태, 결과와 작업 기록을 하나의 실행 흐름으로 연결합니다.",
   },
   {
+    q: "Worker Host는 AgentOps 플랫폼인가요?",
+    a: "Worker Host는 역할별 AI Worker의 요청·실행·결과·상태·업데이트를 확인하고 통제하기 위한 AgentOps 운영 기반을 제공합니다. 다만 Worker 간 자동 멀티에이전트 오케스트레이션이나 범용 fleet 운영 전체를 뜻하지는 않으며, Registry와 일부 연동 기능은 표시된 상태와 적용 환경별로 확인합니다.",
+  },
+  {
     q: "Worker마다 다른 역할을 설정할 수 있나요?",
     a: "네. 담당 업무, 참고 지식, 사용할 도구와 접근 범위를 역할에 맞게 구분할 수 있습니다. 실제 제공 범위는 적용 환경별로 확인합니다.",
   },
@@ -143,6 +147,37 @@ const homepageCases = [
   },
 ];
 
+const agentOpsStages = [
+  {
+    number: "01",
+    label: "CONFIGURE",
+    title: "역할과 범위 구성",
+    copy: "담당 역할에 필요한 지식·도구·접근 범위를 분리해 구성합니다.",
+    tags: "ROLE · KNOWLEDGE · TOOLS",
+  },
+  {
+    number: "02",
+    label: "RUN",
+    title: "독립 요청 실행",
+    copy: "인증된 사용자의 독립 요청 하나를 지정된 Worker에서 처리합니다.",
+    tags: "AUTH · REQUEST · CONTROL",
+  },
+  {
+    number: "03",
+    label: "OBSERVE",
+    title: "상태와 결과 확인",
+    copy: "상태와 결과를 검토하고, 적용된 기록 정책 범위에서 History와 redacted audit을 확인합니다.",
+    tags: "STATUS · RESULT · HISTORY",
+  },
+  {
+    number: "04",
+    label: "CHANGE",
+    title: "검증된 단위로 변경",
+    copy: "Whole Worker Release를 변경 단위로 삼고, 환경별 검증과 rollback 경계를 구분합니다.",
+    tags: "RELEASE · VERIFY · ROLLBACK",
+  },
+];
+
 function FlowArrow({ label }: { label: string }) {
   return (
     <div className="hero-flow-arrow" aria-hidden="true">
@@ -200,6 +235,7 @@ export default function Home() {
         </button>
         <nav className={menuOpen ? "site-nav is-open" : "site-nav"} aria-label="주요 메뉴">
           <a href="#value" onClick={closeMenu}>제품 가치</a>
+          <a href="#agentops" onClick={closeMenu}>운영 기반</a>
           <a href="#usecases" onClick={closeMenu}>활용 사례</a>
           <a href="#roles" onClick={closeMenu}>역할별 Worker</a>
           <a href="#architecture" onClick={closeMenu}>전체 구조</a>
@@ -215,6 +251,7 @@ export default function Home() {
             <p className="hero-lead">
               반복 업무를 역할별 Worker에 맡기고, 팀은 검토와 결정에 집중하세요. 각 Worker는 허용된 지식과 도구로 인증된 사용자의 독립 요청 하나를 처리합니다.
             </p>
+            <p className="hero-agentops-line"><span>AGENTOPS FOUNDATION</span> Worker를 만드는 데서 끝나지 않고, 요청·실행·결과·변경의 운영 경계를 함께 관리하도록 설계합니다.</p>
             <div className="hero-actions">
               <a className="button button-primary" href="#usecases">내 업무와 닮은 사례 보기 <span aria-hidden="true">↓</span></a>
               <a className="button button-secondary" href="#how">작동 방식 확인하기 <span aria-hidden="true">↓</span></a>
@@ -248,6 +285,34 @@ export default function Home() {
         <div><span>02</span><strong>독립 요청 실행</strong></div>
         <div><span>03</span><strong>사람의 승인</strong></div>
         <div><span>04</span><strong>상태와 결과 추적</strong></div>
+      </section>
+
+      <section className="agentops-section" id="agentops" aria-labelledby="agentops-title">
+        <div className="section-shell">
+          <div className="agentops-heading">
+            <div>
+              <p className="eyebrow"><span /> AGENTOPS FOUNDATION</p>
+              <h2 id="agentops-title">Worker를 만들고, 실행하고, 확인하고,<br />안전하게 바꾸는 운영 기반</h2>
+            </div>
+            <p><strong>AgentOps</strong>는 AI Worker를 실제 업무에서 지속적으로 실행·관찰·통제·변경하는 운영 방식입니다. Worker Host는 역할별 구성과 독립 실행을 명확한 운영 경계로 연결합니다.</p>
+          </div>
+
+          <ol className="agentops-flow" aria-label="Worker Host AgentOps 운영 생명주기">
+            {agentOpsStages.map((stage) => (
+              <li key={stage.number}>
+                <div className="agentops-stage-head"><span>{stage.number}</span><small>{stage.label}</small></div>
+                <h3>{stage.title}</h3>
+                <p>{stage.copy}</p>
+                <em>{stage.tags}</em>
+              </li>
+            ))}
+          </ol>
+
+          <div className="agentops-guardrail">
+            <p><strong>사람 중심의 운영 루프</strong> 결과가 다음 업무나 배포를 자동으로 시작하지 않습니다. 사람 또는 승인된 정책이 다음 단계를 결정합니다.</p>
+            <span>SOURCE-ONLY · DEPLOYED · BLOCKED<br />기능·환경별 상태 구분</span>
+          </div>
+        </div>
       </section>
 
       <section className="usecases-section" id="usecases">
@@ -519,8 +584,8 @@ export default function Home() {
           <section className="operations-plane" aria-labelledby="operations-plane-title">
             <div className="operations-plane-head">
               <div>
-                <span className="system-kicker">OPERATIONS PLANE</span>
-                <h3 id="operations-plane-title">실행 흐름과 분리된 운영·업데이트 경계</h3>
+                <span className="system-kicker">AGENTOPS OPERATIONS PLANE</span>
+                <h3 id="operations-plane-title">Worker 운영과 변경을 담당하는 AgentOps 경계</h3>
               </div>
               <span className="mixed-status-badge">MIXED STATUS · VERIFY BY ENVIRONMENT</span>
             </div>
