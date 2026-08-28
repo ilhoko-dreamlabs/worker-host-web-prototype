@@ -9,7 +9,7 @@ import CaseVideoBoard from "../../components/CaseVideoBoard";
 import ContentCycleSection from "../../components/ContentCycleSection";
 import { getUseCase, useCases } from "../cases";
 
-const publishedUrl = "https://ilhoko-dreamlabs.github.io/worker-host-web-prototype/";
+const publishedUrl = "https://worker-host.dreamlabs.co.kr/";
 
 type UseCasePageProps = {
   params: Promise<{ slug: string }>;

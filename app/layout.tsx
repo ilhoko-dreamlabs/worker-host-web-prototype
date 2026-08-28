@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const publishedUrl = "https://ilhoko-dreamlabs.github.io/worker-host-web-prototype/";
+const publishedUrl = "https://worker-host.dreamlabs.co.kr/";
 
 export const metadata: Metadata = {
   metadataBase: new URL(publishedUrl),

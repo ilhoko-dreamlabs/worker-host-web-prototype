@@ -2,7 +2,7 @@
 
 역할별 AI Worker, 사람의 요청·검토 과정과 관련 운영 시스템을 소개하는 반응형 랜딩페이지 프로토타입입니다.
 
-공개 페이지: <https://ilhoko-dreamlabs.github.io/worker-host-web-prototype/>
+공개 페이지: <https://worker-host.dreamlabs.co.kr/>
 
 ## 포함된 화면
 
