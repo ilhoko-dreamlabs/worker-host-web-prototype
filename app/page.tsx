@@ -475,6 +475,38 @@ export default function Home() {
             <p>인증된 독립 요청을 기본 단위로 두고, 별도의 승인된 연계 시스템이 역할별 Worker의 결과와 다음 요청을 연결합니다.</p>
           </div>
 
+          <figure className="architecture-overview-figure">
+            <a
+              className="architecture-overview-link"
+              href={`${basePath}/media/architecture/worker-host-system-architecture-v3.png`}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Worker Host 시스템 참조 아키텍처를 새 탭에서 원본 크기로 보기"
+            >
+              <Image
+                className="architecture-overview-image"
+                src={`${basePath}/media/architecture/worker-host-system-architecture-v3.png`}
+                alt="사람과 협업 채널, 외부 WorkerOps 제어 기능, Portainer 위 역할별 Worker 컨테이너, 연결 업무 시스템과 AgentOps 운영 기반을 보여주는 Worker Host 참조 아키텍처"
+                width={1920}
+                height={1080}
+                sizes="(max-width: 820px) 94vw, 1180px"
+              />
+              <span className="architecture-overview-action">
+                <small>REFERENCE ARCHITECTURE</small>
+                <strong>원본 크기로 확대 <span aria-hidden="true">↗</span></strong>
+              </span>
+            </a>
+            <figcaption>개념 참조도 · 외부 WorkerOps 연계는 Source-only이며, 각 구성요소의 실제 제공 상태와 연동 범위는 환경별 검증이 필요합니다.</figcaption>
+          </figure>
+
+          <div className="architecture-detail-intro">
+            <div>
+              <span className="system-kicker">EXECUTION &amp; CONTROL DETAILS</span>
+              <h3>실행과 통제 흐름을 자세히 보기</h3>
+            </div>
+            <p>독립 요청, 승인된 외부 handoff, Worker별 실행 자원과 AgentOps 운영 경계를 아래 상세 구조에서 확인할 수 있습니다.</p>
+          </div>
+
           <div className="system-overview" role="group" aria-label="사람의 독립 요청부터 Worker 실행과 사람의 최종 결정까지 이어지는 개념 구조">
             <div className="system-overview-head">
               <div>
