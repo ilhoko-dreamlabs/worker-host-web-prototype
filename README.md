@@ -53,5 +53,5 @@ npm run build:pages
 - 제품 소개용 프로토타입이며 공식 배포 또는 production-ready 상태를 의미하지 않습니다.
 - 실제 기능 제공 범위는 Worker별 적용 버전과 운영 상태에 따라 다를 수 있습니다.
 - Source-only / Deployed / Blocked 상태를 구분해 확인해야 합니다.
-- 기준 Worker Host repository commit SHA: `22f6e3ba456523dc59d851f02588e8e7ef6d6472`
+- 기준 Worker Host repository commit SHA: `6b9c349147b08b6ebb3afb29e69551358df3654e`
 - 사례 영상 콘텐츠 기준 Worker Host repository commit SHA: `5f93da1f50fdaa9bc831629d010fdda2fd181a72`

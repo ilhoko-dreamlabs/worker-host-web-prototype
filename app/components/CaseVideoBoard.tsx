@@ -98,7 +98,7 @@ export default function CaseVideoBoard({ item }: CaseVideoBoardProps) {
             <div><small>REVIEWABLE RESULT</small><strong>{item.resultSummary}</strong></div>
             <div><small>HUMAN REVIEW · DECISION</small><strong>{item.decisionSummary}</strong></div>
           </div>
-          <p className="case-board-note"><span aria-hidden="true">●</span> Worker 간 자동 지휘 없이, 담당자가 다음 단계를 결정합니다.</p>
+          <p className="case-board-note"><span aria-hidden="true">●</span> Worker 간 협업 흐름은 사용자가 승인한 외부 연계가 인증된 독립 요청을 제출할 때만 연결되며, 담당자가 다음 단계와 업무 확장 여부를 결정합니다.</p>
 
           <details className="case-video-transcript">
             <summary>영상 내용·내레이션 전문</summary>

@@ -85,7 +85,7 @@ export default function ContentCycleSection({ cycle, guardrail }: ContentCycleSe
             </article>
 
             <article className="feedback-next-card">
-              <small>03 · 사람이 만든 다음 독립 요청</small>
+              <small>03 · 사람이 승인한 다음 독립 요청</small>
               <blockquote>“{cycle.feedback.nextRequest}”</blockquote>
               <ul>
                 {cycle.feedback.nextChanges.map((change) => <li key={change}><span aria-hidden="true">✓</span>{change}</li>)}

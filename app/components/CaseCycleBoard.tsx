@@ -21,7 +21,7 @@ export default function CaseCycleBoard({ item, cycle }: CaseCycleBoardProps) {
       <div className="case-cycle-heading">
         <small>PLAN → PREPARE → REVIEW → LEARN</small>
         <h2 id={titleId}>한 편이 다음 편의 출발점이 되는 과정</h2>
-        <p>모든 연결은 콘텐츠 책임자의 검토와 새로운 독립 요청을 거칩니다.</p>
+        <p>모든 연결은 콘텐츠 책임자가 승인한 범위와 인증된 독립 요청을 거칩니다.</p>
       </div>
 
       <div className="case-cycle-map" role="group" aria-label="콘텐츠 기획부터 피드백 반영까지의 사람 중심 순환 구조">
