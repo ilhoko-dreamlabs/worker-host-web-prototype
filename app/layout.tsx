@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./workerops.css";
 
 const publishedUrl = "https://worker-host.dreamlabs.co.kr/";
 

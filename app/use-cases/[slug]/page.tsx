@@ -7,6 +7,7 @@ import CaseFooter from "../../components/CaseFooter";
 import CaseHeader from "../../components/CaseHeader";
 import CaseVideoBoard from "../../components/CaseVideoBoard";
 import ContentCycleSection from "../../components/ContentCycleSection";
+import { CaseOpsPerspective } from "../../components/WorkerOps";
 import { getUseCase, useCases } from "../cases";
 
 const publishedUrl = "https://worker-host.dreamlabs.co.kr/";
@@ -177,6 +178,8 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
         </div>
         <div className="case-status-note"><strong>상태 구분</strong><p>화면의 연결은 목표 시나리오입니다. Source-only / Deployed / Blocked 상태와 외부 시스템 연계 여부를 구분해 확인합니다.</p></div>
       </section>
+
+      <CaseOpsPerspective slug={item.slug} />
 
       <section className="case-fit" id="fit">
         <div className="section-shell case-fit-layout">

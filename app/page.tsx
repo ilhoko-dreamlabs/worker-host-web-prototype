@@ -5,6 +5,8 @@ import Link from "next/link";
 import { type KeyboardEvent, useState } from "react";
 import { WorkerAgentIcon, WorkerHostLogo, WorkerHostSymbol } from "./components/BrandAssets";
 import { WORKER_HOST_BASELINE_SHA, WORKER_HOST_REFERENCE_DATE } from "./product-reference";
+import { OpsEntryLinks } from "./components/WorkerOps";
+import { OPERATIONS_REFERENCE } from "./operations-reference";
 
 type Role = {
   id: string;
@@ -72,8 +74,8 @@ const roles: Role[] = [
 
 const faqs = [
   {
-    q: "일반 AI Chat과 무엇이 다른가요?",
-    a: "대화만 남기는 것이 아니라 역할별 지식과 도구, 요청 상태, 결과와 작업 기록을 하나의 실행 흐름으로 연결합니다.",
+    q: "이미 챗봇이나 코딩 에이전트를 쓰는데, 무엇이 다른가요?",
+    a: "기존 도구도 지침·파일·연결 도구와 팀 설정을 활용할 수 있습니다. Worker Host의 검토 지점은 AI의 지능 자체가 아니라, 회사가 역할별 Worker의 지침·연결·권한·상태를 준비하고 유지하는 운영 방식입니다. 양쪽 모두 잘 구성된 환경에서 인계·기준 변경·장애 대응의 부담과 호스트 운영 비용을 비교하세요. 현재 도구로 요구를 충족한다면 그대로 사용해도 됩니다.",
   },
   {
     q: "Worker Host는 AgentOps 플랫폼인가요?",
@@ -85,7 +87,7 @@ const faqs = [
   },
   {
     q: "여러 Worker가 협업할 수 있나요?",
-    a: "네. 별도의 승인된 WorkerOps·연계 시스템을 통해, 사용자가 승인한 제한된 범위 안에서 여러 Worker의 결과와 요청을 연결하는 협업 흐름을 구성할 수 있습니다. 연계 시스템은 Worker A의 결과 중 허용된 범위만 입력으로 삼아 Worker B에 새로운 인증된 독립 요청을 제출합니다. Standalone Worker가 다른 Worker를 직접 호출하거나 결과를 보고 후속 요청을 자동 생성하는 구조는 아닙니다. 승인 없는 업무 확장과 무제한 연쇄 호출은 허용하지 않으며, 해당 연계는 Source-only이므로 실제 제공 범위는 환경별로 확인합니다.",
+    a: "네. 사용자가 승인한 제한된 범위에서, 독립 실행되는 Worker 간 인증된 요청·응답·작업 인계를 구성할 수 있는 구조입니다. 각 Worker는 별도 인증·권한·승인·요청 수용 경계를 유지하며, 호출했다고 상대방의 권한을 얻지는 않습니다. 자동 협업에는 별도 입출력 계약과 감사·실패 처리가 필요합니다. 한 Worker 내부의 자율 오케스트레이션이나 승인 없는 업무 확장은 포함하지 않습니다. 이는 아키텍처 경계 설명이며 실제 연계의 구현·배포·검증 상태는 환경별로 확인합니다.",
   },
   {
     q: "Worker가 코드를 자동으로 배포하나요?",
@@ -228,13 +230,14 @@ export default function Home() {
           type="button"
           aria-label={menuOpen ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={menuOpen}
+          aria-controls="home-navigation"
           onClick={() => setMenuOpen((open) => !open)}
         >
           <span />
           <span />
         </button>
-        <nav className={menuOpen ? "site-nav is-open" : "site-nav"} aria-label="주요 메뉴">
-          <a href="#value" onClick={closeMenu}>제품 가치</a>
+        <nav id="home-navigation" className={menuOpen ? "site-nav is-open" : "site-nav"} aria-label="주요 메뉴">
+          <Link href="/why-workerops/" onClick={closeMenu}>왜 WorkerOps인가</Link>
           <a href="#agentops" onClick={closeMenu}>운영 기반</a>
           <a href="#usecases" onClick={closeMenu}>활용 사례</a>
           <a href="#roles" onClick={closeMenu}>역할별 Worker</a>
@@ -474,6 +477,7 @@ export default function Home() {
             <h2 id="system-overview-title">요청이 들어오고, Worker 실행이 연결되며,<br />사람이 통제하는 전체 구조</h2>
             <p>인증된 독립 요청을 기본 단위로 두고, 별도의 승인된 연계 시스템이 역할별 Worker의 결과와 다음 요청을 연결합니다.</p>
           </div>
+          <OpsEntryLinks />
 
           <figure className="architecture-overview-figure">
             <a
@@ -513,7 +517,7 @@ export default function Home() {
                 <span className="system-kicker">EXECUTION FLOW</span>
                 <h3>독립 요청 하나의 실행 흐름</h3>
               </div>
-              <p><strong>APPROVED EXTERNAL CONTROL</strong> Worker 간 협업 흐름은 승인된 외부 연계가 제출한 인증된 독립 요청으로만 연결됩니다.</p>
+              <p><strong>APPROVED COLLABORATION</strong> 독립 Worker 간 협업은 사용자가 승인한 범위의 인증된 요청으로 연결하고, 각자의 권한·승인 경계를 유지합니다.</p>
             </div>
 
             <ol className="system-flow">
@@ -580,9 +584,9 @@ export default function Home() {
                 <span className="system-kicker">CONTROLLED COLLABORATION</span>
                 <h3 id="controlled-collaboration-title">사용자 승인 범위 안에서 Worker 실행 간 협업을 제어</h3>
               </div>
-              <span className="mixed-status-badge">EXTERNAL CONTROL · SOURCE-ONLY</span>
+              <span className="mixed-status-badge">ARCHITECTURE BOUNDARY · 환경별 검증</span>
             </div>
-            <p className="controlled-collaboration-lead">Worker A의 결과는 별도의 승인된 WorkerOps·연계 시스템을 거쳐 Worker B의 새로운 인증된 독립 요청으로 전달할 수 있습니다. 협업 흐름은 구성할 수 있지만 Standalone Worker가 다른 Worker를 직접 호출하거나 결과를 보고 후속 요청을 자동 생성하지는 않습니다.</p>
+            <p className="controlled-collaboration-lead">사용자가 승인한 범위에서 독립 Worker 사이의 인증된 요청·응답·작업 인계를 구성할 수 있습니다. 별도의 외부 연계 시스템을 쓰거나 독립 Worker 간 명시적인 연계 계약을 구성하더라도, 대상 Worker의 인증·권한·승인 경계를 건너뛰지는 않습니다. 아래는 외부 연계를 이용한 구성 예입니다.</p>
 
             <div className="collaboration-route" role="group" aria-label="첫 번째 Worker의 결과를 별도의 승인된 외부 연계 시스템이 두 번째 Worker의 새로운 인증된 독립 요청으로 제출하는 협업 구조">
               <article className="collaboration-worker-card">
@@ -610,7 +614,7 @@ export default function Home() {
               </article>
             </div>
 
-            <p className="controlled-collaboration-rule"><strong>제한 범주</strong> 별도의 외부 WorkerOps·연계 시스템만 Worker Host 밖에서 인증된 독립 요청을 조정할 수 있습니다. 각 요청은 새 요청 ID·별도 권한·독립된 처리 상태로 기록하며, Standalone Worker의 직접 dispatch, 결과 기반 자동 후속 실행과 공유 자율 워크플로 엔진은 포함하지 않습니다. 실제 연계 범위와 제공 상태는 환경별로 확인합니다.</p>
+            <p className="controlled-collaboration-rule"><strong>제한 범주</strong> 협업 호출은 상대방의 권한이나 승인권을 자동 승계하지 않습니다. 자동 연계에는 별도 입출력 계약·감사·실패 경계가 필요하며, 한 Worker 내부의 coordinator·DAG·결과 기반 후속 요청 생성은 포함하지 않습니다. 아키텍처상 허용 범위와 실제 연계의 구현·배포 상태는 구분합니다. 협업 설명 참조: {OPERATIONS_REFERENCE.readDate} · {OPERATIONS_REFERENCE.sha} · Wiki 미커밋 작업본 포함.</p>
           </section>
 
           <section className="operations-plane" aria-labelledby="operations-plane-title">
@@ -687,7 +691,7 @@ export default function Home() {
         </div>
         <div className="trust-statement">
           <span className="statement-mark">“</span>
-          <p>여러 Worker의 결과와 요청은 승인된 외부 연계를 통해 협업 흐름으로 구성할 수 있으며,<br />Standalone Worker는 다른 Worker를 직접 지휘하거나 다음 업무를 임의로 생성하지 않습니다.</p>
+          <p>독립 Worker 사이의 협업은 사용자가 승인한 범위에서 연결하고,<br />각 Worker의 권한·승인·실행 책임은 독립적으로 유지합니다.</p>
           <span>협업은 연결되게 · 요청은 독립적으로 · 결정은 사람에게</span>
         </div>
       </section>

@@ -348,7 +348,7 @@ export const useCases: UseCaseDefinition[] = [
       { mark: "T", title: "테스트·CI", copy: "검증 결과와 build 준비 상태" },
       { mark: "R", title: "Worker Registry", copy: "inventory·desired state 정보, 자동 지휘 아님" },
     ],
-    guardrail: "역할별 Worker의 결과와 요청은 사용자가 승인한 외부 WorkerOps·연계 시스템을 통해 연결할 수 있습니다. 각 연결은 대상·권한·도구를 제한한 새로운 인증된 독립 요청으로 처리하며, Standalone Worker가 다음 Worker를 직접 호출하거나 업무를 자동 확장하지 않습니다. 배포는 승인된 운영 절차로 분리합니다.",
+    guardrail: "역할별 Worker는 사용자가 승인한 제한된 범위에서 인증된 요청·응답·작업 인계로 협업하는 구조를 구성할 수 있습니다. 각 Worker의 인증·권한·승인 경계는 독립적이며 호출만으로 권한을 승계하지 않습니다. 실제 연계 계약과 기능 상태는 환경별로 검증하며 배포는 승인된 운영 절차로 분리합니다.",
     checklist: [
       "역할별로 반복되는 준비·검토 업무가 있는가?",
       "Worker가 참고할 저장소·문서·규칙을 지정할 수 있는가?",
@@ -411,7 +411,7 @@ export const useCases: UseCaseDefinition[] = [
       { mark: "Y", title: "게시 채널", copy: "제작·게시 결과가 놓이는 외부 채널, 직접 연계와 변경 권한은 별도 검증" },
       { mark: "F", title: "피드백 자료", copy: "사람이 범위를 선택해 제공한 지표, 댓글 발췌와 내부 의견" },
     ],
-    guardrail: "콘텐츠 운영 범위는 사용자가 승인하고, 별도의 외부 WorkerOps·연계 시스템이 한 Worker의 결과를 다음 역할 Worker의 새로운 인증 요청으로 제출해 협업 흐름을 구성할 수 있습니다. Standalone Worker의 직접 호출이나 결과 기반 연쇄 실행, YouTube 자동 게시·댓글 수집·실시간 분석을 현재 기능으로 주장하지 않습니다.",
+    guardrail: "콘텐츠 운영 범위는 사용자가 승인하고, 독립 Worker 간 인증된 요청·응답·작업 인계를 각자의 권한·승인 경계 안에서 구성합니다. 자동 연계에는 별도 계약과 환경별 검증이 필요합니다. 한 Worker 내부의 자율 연쇄 실행이나 YouTube 자동 게시·댓글 수집·실시간 분석을 현재 기능으로 주장하지 않습니다.",
     checklist: [
       "대상 시청자와 콘텐츠 목표를 승인할 사람이 있는가?",
       "Worker가 참고할 제품 자료와 브랜드 기준을 지정할 수 있는가?",
