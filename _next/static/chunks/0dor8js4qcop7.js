@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,7415,b=>{"use strict";b.s(["WORKER_HOST_BASELINE_SHA",0,"6b9c349147b08b6ebb3afb29e69551358df3654e","WORKER_HOST_REFERENCE_DATE",0,"2026-09-01"])}]);
