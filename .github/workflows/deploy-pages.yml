@@ -37,8 +37,10 @@ jobs:
           PAGES_BASE_PATH: ""
         run: npm run build:pages
 
-      - name: Keep video binaries outside the Pages payload
-        run: find out/media/use-cases -type f -name 'scenario-v*.mp4' -delete
+      - name: Verify static pages and approved video payload
+        run: |
+          npm run lint
+          node --test scripts/workerops-export.test.mjs
 
       - name: Publish gh-pages branch
         shell: bash

@@ -46,8 +46,13 @@ export function OpsReference() {
         <li><strong>Blocked:</strong> 확인된 제약으로 실행 또는 검증을 진행할 수 없는 상태입니다.</li>
         <li><strong>미검증:</strong> 해당 기능·환경에서 아직 확인하지 않은 상태입니다. 준비 완료로 표시하지 않습니다.</li>
       </ul>
-      <p>Wiki compiled topics 34(독립 실행·협업 경계), 38(Skills), 42(Connectors), ADR-0008·0019 및 해당 Connector 검증 기록을 참조했습니다. 기존 직무별 사례·영상의 기준 버전은 각 페이지의 기존 표기를 유지합니다.</p>
+      <p>Wiki compiled topics 34(독립 실행 경계), 37(RRA), 38(Skill Registry), 39(공통 문맥), 42(Connectors), 46(요청별 Skill 선택), 48(System Events), ADR-0023·0024·0025·0027과 관련 검증 기록을 참조했습니다. 협업은 최신 기준선·상세 설계 27·날짜가 있는 실행 증거로 대조했습니다. 기존 직무별 사례·영상의 제작 기준은 변경하지 않았습니다.</p>
       <p>과거 검증: {OPERATIONS_REFERENCE.evidenceDate} · GitLab 제한 읽기 <code>{OPERATIONS_REFERENCE.liveRead}</code> · Connector 배포·인증 기록 <code>{OPERATIONS_REFERENCE.connectorDeployment}</code></p>
+      <p>승인형 협업: {OPERATIONS_REFERENCE.collaborationDate} · worker0 <code>{OPERATIONS_REFERENCE.collaborationSource}</code> → worker1 <code>{OPERATIONS_REFERENCE.collaborationTarget}</code>. 최초 요청과 동일 대화 후속 요청을 각각 새로 승인해 총 2건 완료, 중복 실행 0건, 첨부 0건을 확인한 한정 기록입니다. 시험용 Key는 당시 만료 기한이 있는 Key였으며 현재 연결 가능 상태나 전체 Worker 적용을 보장하지 않습니다.</p>
+      <p>요청별 Skill 선택: 소스 검증 및 이미지 <code>{OPERATIONS_REFERENCE.skillLoadingImage}</code> 준비 기록이 있습니다. {OPERATIONS_REFERENCE.runtimeObservationDate} 기준선에는 해당 이미지와 후속 이미지의 worker0 실행 관찰이 추가됐지만, 이 관찰을 Skill 정책 전환·실제 선택·모델 적용의 기능 검증 완료로 확대하지 않습니다. 운영 기능 검증은 별도입니다.</p>
+      <p>운영 이벤트 기반 기존 Skill 갱신: <code>{OPERATIONS_REFERENCE.systemEventsImage}</code> · {OPERATIONS_REFERENCE.systemEventsObservationDate} worker0 이미지 실행 관찰. 수신 꺼짐·발행자 0개이며 HTTPS 전달 설정과 CI 연동 검증이 남았습니다. 관리자 전역 허용과 설치된 Skill별 사전 동의가 필요하며, 신규 설치·활성화·권한 부여·업무 실행이 아닙니다.</p>
+      <p>데이터 보존 복구: worker00 · 2026-10-13 · <code>{OPERATIONS_REFERENCE.connectorRecovery}</code>. 승인된 업데이트 뒤 13개 점검과 기존 실행 기록 2,000건 읽기를 확인했습니다. 전체 자동 복구나 후속 CI 구현 완료의 근거가 아닙니다.</p>
+      <p>공통 문맥: <code>{OPERATIONS_REFERENCE.contextQualitySource}</code> · 합성 자료·명시적 60초 설정의 격리 품질 검증과 후속 이미지 관찰을 구분합니다. 진행 화면 복원·일반 Chat 후속 초안: 소스 <code>{OPERATIONS_REFERENCE.progressAndDraftSource}</code> · 검증 <code>{OPERATIONS_REFERENCE.progressAndDraftValidation}</code>. 로컬 브라우저 검증까지이며 실제 Worker 적용 검증은 별도입니다.</p>
     </details>
   </section>;
 }
@@ -55,7 +60,7 @@ export function OpsReference() {
 export function OpsEntryLinks() {
   return <div className="ops-entry-links">
     <Link href="/why-workerops/" className="ops-entry-card"><OpsIcon kind="people" /><div><small>이미 AI를 쓰고 있다면</small><strong>왜 WorkerOps인가</strong><p>직접 구성·운영하는 방법과 무엇을 비교해야 할까요?</p></div><span aria-hidden="true">↗</span></Link>
-    <Link href="/workerops-in-action/" className="ops-entry-card"><OpsIcon kind="guide" /><div><small>결과를 만든 다음의 이야기</small><strong>업무를 계속 운영하는 장면</strong><p>인계·기준 변경·권한·연결 장애를 네 장면으로 확인하세요.</p></div><span aria-hidden="true">↗</span></Link>
+    <Link href="/workerops-in-action/" className="ops-entry-card"><OpsIcon kind="guide" /><div><small>결과를 만든 다음의 이야기</small><strong>업무를 계속 운영하는 장면</strong><p>인계·지침·권한·복구·승인형 협업을 다섯 장면으로 확인하세요.</p></div><span aria-hidden="true">↗</span></Link>
   </div>;
 }
 
@@ -63,7 +68,7 @@ const caseOperations: Record<string, { title: string; copy: string; measure: str
   "sales-data-analysis": { title: "다음 담당자도 같은 수익성 기준으로 분석할 수 있을까요?", copy: "업무 책임자가 매출·매입의 포함 범위와 산식을 승인하고, 관리자가 각 Worker에 적용된 자료와 지침을 확인하는 장면을 제안합니다. 보고서가 나왔다는 사실과 기준이 일치한다는 확인은 별개입니다.", measure: "인계 시 재설정 수 · 산식 버전 불일치 · 검토 시간", anchor: "handoff", icon: "people" },
   "institution-documents": { title: "서식이나 규정이 바뀌면, 적용 여부까지 확인합니다.", copy: "기존 문서 초안과 새 지침의 적용 결과를 같은 입력으로 비교합니다. 변경 승인과 Worker별 적용 확인을 분리하며, 모든 Worker의 자동 동기화를 전제하지 않습니다.", measure: "기준 변경 단계 · 적용 확인 시간 · 누락 항목", anchor: "guidelines", icon: "guide" },
   "business-operations": { title: "담당자가 바뀌거나 연결이 끊겨도, 조치할 사람은 명확하게.", copy: "인계할 업무 자료와 이용 가능한 연결을 먼저 정합니다. 구성된 연결이 사용할 수 없는 상태라면 관리자가 원인·권한·복구를 확인하고, 직원은 확인 후 다시 요청하는 운영 장면입니다.", measure: "인계 확인 질문 · 원인 파악 시간 · 관리자 조치 수", anchor: "recovery", icon: "plug" },
-  "software-team": { title: "개발 결과를 QA로 넘길 때, 권한까지 넘기지는 않습니다.", copy: "사용자가 승인한 범위에서 독립 Worker 간 인증된 요청·응답·작업 인계를 구성할 수 있습니다. 각 Worker는 별도 권한과 승인·요청 수용 경계를 유지합니다. 실제 연계 계약과 기능 상태는 환경별 확인이 필요합니다.", measure: "인계된 범위 · 허용 밖 도구 호출 · 검토·배포 책임", anchor: "permissions", icon: "shield" },
+  "software-team": { title: "개발 결과를 QA로 넘길 때, 권한까지 넘기지는 않습니다.", copy: "관리자가 등록한 대상 Worker에 보낼 요청을 사용자가 확인·승인하고, 대상은 자신의 인증·권한으로 독립 실행합니다. 같은 대화의 후속 요청도 새 승인이 필요합니다. 개발→QA는 가상 업무 예시이며, 실제 검증된 worker0→worker1 요청·응답과 구분합니다.", measure: "승인된 요청 범위 · 대상의 독립 권한 · 요청·결과 이력", anchor: "collaboration", icon: "shield" },
   "youtube-content-operations": { title: "피드백이 다음 기획으로 갈 때, 브랜드 기준도 함께 확인합니다.", copy: "담당자가 반영할 의견과 새 브랜드 지침을 승인하고, 다음 요청에서 적용 여부를 비교합니다. 다른 역할과의 인계는 승인된 범위로 제한하며 자동 게시나 무제한 연쇄 실행을 뜻하지 않습니다.", measure: "지침 적용 누락 · 인계 질문 · 다음 기획 검토 시간", anchor: "guidelines", icon: "guide" },
 };
 

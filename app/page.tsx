@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type KeyboardEvent, useState } from "react";
+import { type KeyboardEvent, useRef, useState } from "react";
 import { WorkerAgentIcon, WorkerHostLogo, WorkerHostSymbol } from "./components/BrandAssets";
 import { WORKER_HOST_BASELINE_SHA, WORKER_HOST_REFERENCE_DATE } from "./product-reference";
 import { OpsEntryLinks } from "./components/WorkerOps";
 import { OPERATIONS_REFERENCE } from "./operations-reference";
+import ConsultationPrep from "./components/ConsultationPrep";
 
 type Role = {
   id: string;
@@ -87,7 +88,7 @@ const faqs = [
   },
   {
     q: "여러 Worker가 협업할 수 있나요?",
-    a: "네. 사용자가 승인한 제한된 범위에서, 독립 실행되는 Worker 간 인증된 요청·응답·작업 인계를 구성할 수 있는 구조입니다. 각 Worker는 별도 인증·권한·승인·요청 수용 경계를 유지하며, 호출했다고 상대방의 권한을 얻지는 않습니다. 자동 협업에는 별도 입출력 계약과 감사·실패 처리가 필요합니다. 한 Worker 내부의 자율 오케스트레이션이나 승인 없는 업무 확장은 포함하지 않습니다. 이는 아키텍처 경계 설명이며 실제 연계의 구현·배포·검증 상태는 환경별로 확인합니다.",
+    a: "네. 관리자가 등록한 대상 Worker에 사용자가 요청별로 승인한 호출을 보내고 결과를 받을 수 있습니다. 같은 대상 대화의 후속 요청도 새 승인이 필요하며, 대상 Worker는 자신의 인증·권한·요청 수용 정책을 독립 적용합니다. 2026년 10월 3일 worker0→worker1 한 쌍에서 최초·후속 요청을 각 1건 완료한 제한 검증 기록이 있습니다. 모든 Worker의 현재 사용 가능 상태나 전체 업무 검증을 뜻하지 않습니다. 권한 승계, 승인 없는 연쇄 실행·다수 대상 자동 분산 및 Worker 간 첨부 전송은 이 검증에 포함하지 않습니다.",
   },
   {
     q: "Worker가 코드를 자동으로 배포하나요?",
@@ -215,39 +216,43 @@ export default function Home() {
     document.getElementById(`role-tab-${nextRole.id}`)?.focus();
   };
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <main>
+      <a className="ops-skip" href="#home-content">본문으로 건너뛰기</a>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Worker Host 홈" onClick={closeMenu}>
           <WorkerHostLogo variant="white" className="brand-logo" preload />
         </a>
         <button
+          ref={menuButtonRef}
           className="menu-button"
           type="button"
           aria-label={menuOpen ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={menuOpen}
           aria-controls="home-navigation"
+          onKeyDown={(event) => { if (event.key === "Escape") closeMenu(); }}
           onClick={() => setMenuOpen((open) => !open)}
         >
           <span />
           <span />
         </button>
-        <nav id="home-navigation" className={menuOpen ? "site-nav is-open" : "site-nav"} aria-label="주요 메뉴">
+        <nav id="home-navigation" className={menuOpen ? "site-nav is-open" : "site-nav"} aria-label="주요 메뉴" onKeyDown={(event) => { if (event.key === "Escape") { closeMenu(); menuButtonRef.current?.focus(); } }}>
           <Link href="/why-workerops/" onClick={closeMenu}>왜 WorkerOps인가</Link>
           <a href="#agentops" onClick={closeMenu}>운영 기반</a>
           <a href="#usecases" onClick={closeMenu}>활용 사례</a>
           <a href="#roles" onClick={closeMenu}>역할별 Worker</a>
           <a href="#architecture" onClick={closeMenu}>전체 구조</a>
-          <a className="nav-cta" href="#contact" onClick={closeMenu}>도입 상담</a>
+          <a className="nav-cta" href="#contact" onClick={closeMenu}>도입 검토</a>
         </nav>
       </header>
 
       <section className="hero" id="top">
-        <div className="section-shell hero-layout">
+        <div className="section-shell hero-layout" id="home-content" tabIndex={-1}>
           <div className="hero-copy">
             <p className="eyebrow"><span /> DREAMLABS · WORKER HOST</p>
             <h1>팀의 역할은 유지하고,<br /><em>AI 실행력은 확장하세요.</em></h1>
@@ -278,7 +283,7 @@ export default function Home() {
                 <small>REVIEWABLE RESULT</small><strong>범위 · 근거 · 확인 항목</strong><span>사람이 승인·수정·보류</span>
               </div>
             </div>
-            <div className="hero-gate"><span>HUMAN CONTROL</span> 다음 단계는 사람 또는 사용자가 승인한 외부 연계 규칙이 결정합니다.</div>
+            <div className="hero-gate"><span>HUMAN CONTROL</span> 다른 Worker에 보낼 요청도, 이어갈 다음 요청도 사용자가 승인합니다.</div>
           </div>
         </div>
       </section>
@@ -312,7 +317,7 @@ export default function Home() {
           </ol>
 
           <div className="agentops-guardrail">
-            <p><strong>사람 중심의 운영 루프</strong> 결과가 다음 업무나 배포를 자동으로 시작하지 않습니다. 사람 또는 승인된 정책이 다음 단계를 결정합니다.</p>
+            <p><strong>사람 중심의 운영 루프</strong> 결과가 다음 업무나 배포를 자동으로 시작하지 않습니다. Worker 간 후속 요청도 새로 확인하고 승인합니다.</p>
             <span>SOURCE-ONLY · DEPLOYED · BLOCKED<br />기능·환경별 상태 구분</span>
           </div>
         </div>
@@ -475,24 +480,24 @@ export default function Home() {
           <div className="section-heading center-heading light-heading">
             <p className="eyebrow"><span /> WHOLE SYSTEM CONCEPT</p>
             <h2 id="system-overview-title">요청이 들어오고, Worker 실행이 연결되며,<br />사람이 통제하는 전체 구조</h2>
-            <p>인증된 독립 요청을 기본 단위로 두고, 별도의 승인된 연계 시스템이 역할별 Worker의 결과와 다음 요청을 연결합니다.</p>
+            <p>회사가 지침과 연결을 준비하고, Worker는 허용된 범위에서 실행합니다. 다른 Worker와 협업할 때도 요청별 사용자 승인과 대상의 독립 권한을 유지합니다.</p>
           </div>
           <OpsEntryLinks />
 
           <figure className="architecture-overview-figure">
             <a
               className="architecture-overview-link"
-              href={`${basePath}/media/architecture/worker-host-system-architecture-v3.png`}
+              href={`${basePath}/media/architecture/worker-host-system-architecture-v5.svg`}
               target="_blank"
               rel="noreferrer"
               aria-label="Worker Host 시스템 참조 아키텍처를 새 탭에서 원본 크기로 보기"
             >
               <Image
                 className="architecture-overview-image"
-                src={`${basePath}/media/architecture/worker-host-system-architecture-v3.png`}
-                alt="사람과 협업 채널, 외부 WorkerOps 제어 기능, Portainer 위 역할별 Worker 컨테이너, 연결 업무 시스템과 AgentOps 운영 기반을 보여주는 Worker Host 참조 아키텍처"
+                src={`${basePath}/media/architecture/worker-host-system-architecture-v5.svg`}
+                alt="중앙 Skill 지침 공급, 요청별 승인형 Worker 협업, 기존 Skill 갱신만 처리하는 별도 운영 이벤트 경로, Portainer·Docker 및 AgentOps 운영 경계를 구분한 참조 구성도. 운영 이벤트의 실제 연동 검증은 대기 상태입니다. 상세 설명은 아래 실행과 통제 흐름에 있습니다."
                 width={1920}
-                height={1080}
+                height={1560}
                 sizes="(max-width: 820px) 94vw, 1180px"
               />
               <span className="architecture-overview-action">
@@ -500,7 +505,7 @@ export default function Home() {
                 <strong>원본 크기로 확대 <span aria-hidden="true">↗</span></strong>
               </span>
             </a>
-            <figcaption>개념 참조도 · 외부 WorkerOps 연계는 Source-only이며, 각 구성요소의 실제 제공 상태와 연동 범위는 환경별 검증이 필요합니다.</figcaption>
+            <figcaption>참조 구성도 v5 · 중앙 지침 공급, 요청별 승인형 협업, 기존 Skill 갱신의 운영 이벤트를 분리했습니다. 외부 시스템은 구성 예이며 모든 연동의 배포를 뜻하지 않습니다. <Link href="/workerops-in-action/#evidence">검증된 범위와 남은 확인 사항 ↗</Link></figcaption>
           </figure>
 
           <div className="architecture-detail-intro">
@@ -508,7 +513,7 @@ export default function Home() {
               <span className="system-kicker">EXECUTION &amp; CONTROL DETAILS</span>
               <h3>실행과 통제 흐름을 자세히 보기</h3>
             </div>
-            <p>독립 요청, 승인된 외부 handoff, Worker별 실행 자원과 AgentOps 운영 경계를 아래 상세 구조에서 확인할 수 있습니다.</p>
+            <p>지침은 선택해 적용하고, 협업 요청은 승인해 전달합니다. 실행 결과와 적용 상태는 각각 확인합니다.</p>
           </div>
 
           <div className="system-overview" role="group" aria-label="사람의 독립 요청부터 Worker 실행과 사람의 최종 결정까지 이어지는 개념 구조">
@@ -528,7 +533,7 @@ export default function Home() {
                 <ul className="system-chip-list" aria-label="연결 가능한 사용자 접점 예시">
                   <li>Web Console</li>
                   <li>Chat · Mattermost</li>
-                  <li>Remote Request API · Source-only</li>
+                  <li>Remote Request API · 특정 환경 검증</li>
                   <li>예약된 독립 요청</li>
                 </ul>
                 <p>연결 범위와 상태는 적용 환경별로 확인합니다.</p>
@@ -584,37 +589,39 @@ export default function Home() {
                 <span className="system-kicker">CONTROLLED COLLABORATION</span>
                 <h3 id="controlled-collaboration-title">사용자 승인 범위 안에서 Worker 실행 간 협업을 제어</h3>
               </div>
-              <span className="mixed-status-badge">ARCHITECTURE BOUNDARY · 환경별 검증</span>
+              <span className="mixed-status-badge">BOUNDED PROOF · 2026-10-03</span>
             </div>
-            <p className="controlled-collaboration-lead">사용자가 승인한 범위에서 독립 Worker 사이의 인증된 요청·응답·작업 인계를 구성할 수 있습니다. 별도의 외부 연계 시스템을 쓰거나 독립 Worker 간 명시적인 연계 계약을 구성하더라도, 대상 Worker의 인증·권한·승인 경계를 건너뛰지는 않습니다. 아래는 외부 연계를 이용한 구성 예입니다.</p>
+            <p className="controlled-collaboration-lead">직접 호출은 가능하고, 실행 범위는 통제합니다. 관리자가 등록한 Worker RRA Connector를 통해 요청을 보내되, 사용자가 대상과 내용을 먼저 승인합니다. 아래 역할 구성은 가상 예시이며, 실제 worker0→worker1 검증과 구분합니다.</p>
 
-            <div className="collaboration-route" role="group" aria-label="첫 번째 Worker의 결과를 별도의 승인된 외부 연계 시스템이 두 번째 Worker의 새로운 인증된 독립 요청으로 제출하는 협업 구조">
+            <div className="collaboration-route" role="group" aria-label="호출 Worker가 요청을 준비하고 사용자가 승인하면 Worker RRA Connector가 대상 Worker에 전송하며 대상은 독립 권한으로 실행하는 구조">
               <article className="collaboration-worker-card">
                 <WorkerAgentIcon className="collaboration-worker-icon" />
                 <small>ROLE WORKER A · 구성 예</small>
-                <strong>Product Worker의 결과</strong>
-                <p>요구사항 범위 · 수용 기준 · 확인 항목</p>
+                <strong>요청을 준비하는 Worker</strong>
+                <p>예: 개발 검토 결과 중 QA에 전달할 내용 정리</p>
               </article>
-              <div className="collaboration-connector" aria-hidden="true"><span>RESULT</span><i /></div>
+              <div className="collaboration-connector" aria-hidden="true"><span>PREVIEW</span><i /></div>
               <article className="collaboration-gate-card">
-                <small>USER APPROVAL · EXTERNAL WORKEROPS</small>
-                <strong>승인 범위 안에서 새 요청 제출</strong>
-                <p>허용된 결과 범위와 대상·권한·도구를 확인한 뒤 인증된 독립 요청을 발행합니다.</p>
+                <small>USER APPROVAL · WORKER RRA CONNECTOR</small>
+                <strong>이 대상 · 이 요청을 승인</strong>
+                <p>등록된 대상과 요청 내용·허용 범위·만료 조건을 확인한 뒤 서버가 인증된 요청을 전송합니다.</p>
                 <div className="collaboration-modes">
-                  <span><b>기본</b> 사람의 검토·승인 후 새 요청 제출</span>
-                  <span><b>연동 옵션</b> 승인된 외부 WorkerOps·연계 시스템 <em>Source-only · 환경별 검증</em></span>
+                  <span><b>이번 요청</b> 대상 하나 · 요청 한 건 · 명시적 승인</span>
+                  <span><b>후속 요청</b> 같은 대화를 이어도 새 승인 필요</span>
                 </div>
               </article>
               <div className="collaboration-connector" aria-hidden="true"><span>AUTHENTICATED REQUEST</span><i /></div>
               <article className="collaboration-worker-card">
                 <WorkerAgentIcon className="collaboration-worker-icon" />
                 <small>ROLE WORKER B · 구성 예</small>
-                <strong>Engineering·QA Worker 실행</strong>
-                <p>새 요청 ID · 별도 권한 · 독립된 처리 상태</p>
+                <strong>대상 Worker의 독립 실행</strong>
+                <p>자신의 API Key 정책과 실행 가능 여부를 확인한 뒤 결과 반환</p>
               </article>
             </div>
 
-            <p className="controlled-collaboration-rule"><strong>제한 범주</strong> 협업 호출은 상대방의 권한이나 승인권을 자동 승계하지 않습니다. 자동 연계에는 별도 입출력 계약·감사·실패 경계가 필요하며, 한 Worker 내부의 coordinator·DAG·결과 기반 후속 요청 생성은 포함하지 않습니다. 아키텍처상 허용 범위와 실제 연계의 구현·배포 상태는 구분합니다. 협업 설명 참조: {OPERATIONS_REFERENCE.readDate} · {OPERATIONS_REFERENCE.sha} · Wiki 미커밋 작업본 포함.</p>
+            <div className="collaboration-return"><strong>결과는 호출한 대화로</strong><span>요청·승인·처리 이력을 연결해 확인합니다. 다음 업무로 자동 전환하지 않습니다.</span></div>
+            <p className="controlled-collaboration-rule"><strong>검증된 범위</strong> 2026-10-03 worker0→worker1 최초 요청 1건 + 동일 대화 후속 요청 1건 완료, 중복 실행 0건. 특정 한 쌍의 과거 검증이며 현재 연결 상태·전체 Worker·개발→QA 업무 완료의 증거가 아닙니다. <Link href="/workerops-in-action/#collaboration">승인형 협업 장면 보기 ↗</Link></p>
+            <p className="controlled-collaboration-rule"><strong>제한 범주</strong> 권한 승계, 포괄적 상시 승인, 승인 없는 후속 요청, 연쇄 호출·다수 대상 자동 분산은 허용하지 않습니다. Worker 간 첨부 전송은 보류 상태입니다. 만료·재준비·대상 식별 표시는 후속 확인 항목입니다. 설명 참조: {OPERATIONS_REFERENCE.readDate} · {OPERATIONS_REFERENCE.sha} · Wiki 작업본 포함.</p>
           </section>
 
           <section className="operations-plane" aria-labelledby="operations-plane-title">
@@ -626,16 +633,21 @@ export default function Home() {
               <span className="mixed-status-badge">MIXED STATUS · VERIFY BY ENVIRONMENT</span>
             </div>
             <ul>
+              <li><small>GUIDANCE · SELECTED INSTALL</small><strong>Skill Registry</strong><p>업무 지침의 버전별 선택 설치. 설치·사용 설정·실제 적용을 분리</p><span className="architecture-state state-verify">설치 일부 확인 · 활용 검증 별도</span></li>
               <li className="operations-registry-card">
                 <WorkerHostSymbol className="operations-registry-symbol" />
                 <div><small>REFERENCE · NOT A DISPATCHER</small><strong>Worker Registry</strong><p>역할·이미지·버전·상태를 별도 운영 경계에서 참조</p><span className="architecture-state state-source">SOURCE-ONLY · RUNTIME UNVERIFIED</span></div>
               </li>
-              <li><small>SOURCE · REVIEW · BUILD</small><strong>검증 기준 Worker Release</strong><p>소스, 검증 결과와 immutable 이미지의 기준을 관리</p><span className="architecture-state state-source">SOURCE-ONLY</span></li>
+              <li><small>SOURCE · REVIEW · BUILD</small><strong>불변 Worker Release</strong><p>검증 소스와 이미지 후보를 준비. 준비와 실제 Worker 업데이트는 별도</p><span className="architecture-state state-verify">IMAGE VERIFIED · 적용 별도</span></li>
               <li><small>SITE-LOCAL UPDATE</small><strong>Worker Update Manager</strong><p>사용자 또는 승인 정책이 만든 요청만 해당 사이트에서 처리</p><span className="architecture-state state-deployed">DEPLOYED · SPECIFIC ENV</span></li>
               <li><small>CUSTOMER RUNTIME</small><strong>Portainer · Docker 환경</strong><p>지정된 Worker를 독립 실행하고 운영 변경을 분리</p><span className="architecture-state state-deployed">DEPLOYED · DIRECT-TEST</span></li>
               <li><small>PER-WORKER BOUNDARY</small><strong>독립 데이터 · 인증 · 상태</strong><p>보존 여부는 Release와 환경별 검증 결과로 확인</p><span className="architecture-state state-verify">VERIFY BY RELEASE</span></li>
             </ul>
-            <p className="operations-plane-note"><strong>이 개념도가 모든 구성의 배포를 뜻하지는 않습니다.</strong> Registry는 요청을 자동 배차하거나 Worker를 지휘하지 않으며, Manager가 구성된 환경에서는 해당 사이트의 Manager가 업데이트 실행을 담당합니다.</p>
+            <p className="operations-plane-note"><strong>지침 공급과 실행 환경 업데이트는 다릅니다.</strong> Skill Registry는 지침 패키지를, OCI Container Registry는 이미지 파일을 공급합니다. 선택적 Worker Registry는 이미지 공급·운영 가시성을 돕지만 작업을 자동 배차하지 않습니다. 구성된 사이트의 Update Manager가 업데이트 실행을 담당하며, 중앙에서 모든 지침과 이미지를 자동 적용한다는 뜻은 아닙니다.</p>
+            <div className="system-events-note">
+              <div><span className="system-kicker">SYSTEM EVENTS · SEPARATE FROM BUSINESS REQUESTS</span><h4>업무를 맡기는 승인과 지침을 갱신하는 허용은 다릅니다.</h4><p>Worker 간 업무 요청은 매번 사용자가 승인합니다. 별도의 운영 이벤트 경로는 CI의 발행 사실을 받고, 관리자가 전역·Skill별로 미리 허용한 <strong>기존 설치 패키지의 버전 갱신만</strong> 처리하도록 구성합니다. 무결성과 사용 중 상태를 확인하며, 신규 설치·활성화·권한 부여·업무 실행을 대신하지 않습니다.</p></div>
+              <p><strong>소스·이미지 확인 · 운영 연동 검증 대기</strong><span>2026-10-13 worker0 이미지 실행은 관찰됐지만 수신 꺼짐·발행자 0개였습니다. HTTPS 전달 설정과 CI 연동 검증이 남아 있습니다.</span><Link href="/why-workerops/#guidance-updates">중앙 갱신과 적용 확인의 차이 ↗</Link></p>
+            </div>
           </section>
 
           <ul className="architecture-principles" aria-label="전체 시스템 구조의 다섯 가지 원칙">
@@ -647,8 +659,8 @@ export default function Home() {
           </ul>
 
           <div className="architecture-reference">
-            <p><strong>상태 읽는 법</strong> Source-only는 소스에만 존재하고, Deployed는 특정 환경의 배포 근거가 있으며, Blocked는 확인된 제한이 남아 있음을 뜻합니다. 실제 상태는 기능·환경·특정 Worker별로 구분합니다.</p>
-            <span>Product reference · {WORKER_HOST_BASELINE_SHA} · {WORKER_HOST_REFERENCE_DATE}</span>
+            <p><strong>상태 읽는 법</strong> Source-only는 소스 구현·검증 단계, Deployed는 특정 환경의 배포 근거가 있는 상태, Blocked는 확인된 제한이 남은 상태입니다. 이미지가 실행 중이어도 개별 기능의 활성화·업무 검증이 완료된 것은 아닙니다. 실제 상태는 기능·환경·특정 Worker별로 구분합니다.</p>
+            <span>구성도·운영 설명 참조 · {OPERATIONS_REFERENCE.sha} · {OPERATIONS_REFERENCE.readDate}<br />{OPERATIONS_REFERENCE.wikiState}</span>
           </div>
         </div>
       </section>
@@ -735,10 +747,7 @@ export default function Home() {
           <p className="eyebrow"><span /> START WITH ONE WORKER</p>
           <h2>팀의 첫 번째 역할별 Worker를<br />설계해 보세요.</h2>
           <p>반복되는 업무, 필요한 지식과 사람의 승인 지점을 함께 정리하면 작은 범위에서 Worker Host 적용을 시작할 수 있습니다.</p>
-          <div className="contact-actions">
-            <a className="button button-light" href="#top">도입 상담 준비하기 <span aria-hidden="true">↗</span></a>
-            <span>상담 연결 채널은 정식 공개 시 제공됩니다.</span>
-          </div>
+          <ConsultationPrep />
         </div>
       </section>
 
@@ -748,11 +757,11 @@ export default function Home() {
             <WorkerHostLogo variant="white" className="footer-brand-logo" />
           </a>
           <p>역할별 AI Worker로 팀의 실행력을 확장하는 로컬 AI 실행 기반.</p>
-          <nav aria-label="푸터 메뉴"><a href="#value">제품 가치</a><a href="#roles">역할별 Worker</a><a href="#trust">신뢰 설계</a><a href="#contact">도입 문의</a></nav>
+          <nav aria-label="푸터 메뉴"><a href="#value">제품 가치</a><a href="#roles">역할별 Worker</a><a href="#trust">신뢰 설계</a><a href="#contact">도입 검토 준비</a></nav>
         </div>
         <div className="footer-legal">
           <p>소개된 기능의 실제 제공 범위는 Worker별 적용 버전과 운영 상태에 따라 다를 수 있습니다. Source-only / Deployed / Blocked 상태를 구분해 확인합니다.</p>
-          <span>Prototype · Product reference {WORKER_HOST_BASELINE_SHA} · {WORKER_HOST_REFERENCE_DATE}</span>
+          <span>기존 사례 기준 {WORKER_HOST_BASELINE_SHA} · {WORKER_HOST_REFERENCE_DATE}<br />구성도·협업·WorkerOps 보완 {OPERATIONS_REFERENCE.sha} · {OPERATIONS_REFERENCE.readDate} · Wiki 작업본 포함</span>
         </div>
       </footer>
     </main>

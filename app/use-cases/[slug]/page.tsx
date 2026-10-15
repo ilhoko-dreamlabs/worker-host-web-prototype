@@ -80,11 +80,11 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
 
         {item.contentCycle
           ? <CaseCycleBoard item={item} cycle={item.contentCycle} />
-          : <CaseVideoBoard item={item} />}
+          : <CaseVideoBoard key={item.slug} item={item} />}
       </section>
 
       <section className="case-principles" aria-label="시나리오 적용 원칙">
-        <span>독립 요청</span><span>승인된 외부 연계 협업</span><span>검토 가능한 결과</span><span>사람의 검토와 최종 결정</span>
+        <span>독립 요청</span><span>요청별 승인형 협업</span><span>검토 가능한 결과</span><span>사람의 검토와 최종 결정</span>
       </section>
 
       {item.analysisPreview ? <AnalysisPaper preview={item.analysisPreview} /> : null}

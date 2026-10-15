@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./workerops.css";
+import "./consultation.css";
+import "./video.css";
 
 const publishedUrl = "https://worker-host.dreamlabs.co.kr/";
 
 export const metadata: Metadata = {
   metadataBase: new URL(publishedUrl),
+  alternates: { canonical: publishedUrl },
   title: "Worker Host | 역할별 AI Worker 실행 기반",
   description:
     "판매·수익성 분석, 기관 문서업무, 기업 운영, 콘텐츠와 개발팀 업무를 역할별 AI Worker로 확장하세요. 승인된 지식과 도구를 연결하고 중요한 결정은 사람에게 남깁니다.",

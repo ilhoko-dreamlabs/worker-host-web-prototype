@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1260" viewBox="0 0 1920 1260" role="img" aria-labelledby="architecture-title architecture-description">
+  <title id="architecture-title">DreamLabs Worker Host 시스템 아키텍처 v4</title>
+  <desc id="architecture-description">2026년 10월 8일 읽기 기준의 참조 구조. 중앙 업무 가이드 준비, Skill Registry의 선택 및 버전 관리, Worker별 설치·활성화·검증을 구분한다. 자동 일괄 배포를 뜻하지 않는다. 실제 실행은 사용자 미리보기·승인, Worker A의 outbound RRA Connector, 대상 Worker B의 별도 API key 및 admission, 결과 반환 순서다. 같은 세션의 후속 요청도 새 승인이 필요하다. 승인 범위는 정확히 대상 하나와 요청 하나이며, 권한 승계·자율 연쇄·팬아웃은 없고 Worker 간 첨부 전달은 보류다. 각 Worker는 Docker의 독립 컨테이너이며 Knowledge, Workspace, Skills, Adapters와 Tool Connector를 보유한다. Portainer는 컨테이너 관리 제어면이지 요청 라우터가 아니다. WorkMap, Key, SSOT, Approval, Tuner는 외부 통합 기능의 개념 및 구성 예시다. AgentOps의 GitLab CI, 불변 이미지 후보, site-local Update Manager의 통제된 변경을 실행 경계와 구분한다. 선택형 Worker Registry의 이미지 공급 및 토폴로지 가시성은 Skill Registry와 다르다. Zabbix 관찰, Telegram 알림, Mattermost 채널 연동은 환경별 검증이 필요하다. 2026년 10월 3일 worker0에서 worker1로 최초 및 후속 총 두 건, 중복 0건의 과거 한정 검증은 전체 Worker나 현재 가용성 증거가 아니다. Skill Registry 한 개 패키지 설치 관찰과 enable 및 injection 운영 수용 대기는 별개다. Context Selector 소스 검증은 완료되었지만 운영 기능 수용은 대기이며, 10월 7일의 이미지 관찰은 기능 검증 증거가 아니다. 개념 구조는 production-ready를 주장하지 않는다. 참조 SHA e962e7387968da6c1e8e274c708a4515f464c6f5.</desc>
+  <defs>
+    <linearGradient id="brand-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102337"/>
+      <stop offset="1" stop-color="#008f86"/>
+    </linearGradient>
+    <linearGradient id="brand-signal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="0.55" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#a3e635"/>
+    </linearGradient>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#008e84"/></marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#2563eb"/></marker>
+    <marker id="arrow-result" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#67b9ff"/></marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#f9913d"/></marker>
+    <symbol id="people" viewBox="0 0 32 32"><circle cx="13" cy="9" r="5"/><path d="M3 28v-5c0-5 4-8 10-8s10 3 10 8v5M23 4c6 1 6 9 1 10M27 18c3 1 4 4 4 7v3"/></symbol>
+    <symbol id="instructions" viewBox="0 0 32 32"><path d="M8 3h14l6 6v20H8ZM21 3v7h7M3 9v20h19M13 15h10M13 20h10M13 25h7"/></symbol>
+    <symbol id="catalog" viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="24" rx="3"/><path d="M3 13h26M11 13v16M9 2v6M23 2v6M16 19h8M16 24h5"/></symbol>
+    <symbol id="shield" viewBox="0 0 32 32"><path d="M16 2 28 7v9c0 7-5 11-12 14C9 27 4 23 4 16V7Z"/><path d="m10 16 4 4 8-9"/></symbol>
+    <symbol id="key" viewBox="0 0 32 32"><path d="M19 3a9 9 0 0 0-8 13L2 25v5h6v-4h4v-4l4-4A9 9 0 1 0 19 3Z"/><circle cx="23" cy="9" r="1.5"/></symbol>
+    <symbol id="server" viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="11" rx="3"/><rect x="3" y="18" width="26" height="11" rx="3"/><path d="M9 8.5h.1M9 23.5h.1M17 8.5h6M17 23.5h6"/></symbol>
+    <symbol id="git" viewBox="0 0 32 32"><circle cx="8" cy="5" r="3"/><circle cx="8" cy="27" r="3"/><circle cx="26" cy="6" r="3"/><path d="M8 8v16M26 9v4c0 5-5 7-10 7H8"/></symbol>
+    <symbol id="bell" viewBox="0 0 32 32"><path d="M6 13a10 10 0 0 1 20 0c0 8 3 9 3 11H3c0-2 3-3 3-11ZM12 28c2 3 6 3 8 0M16 1v2"/></symbol>
+    <symbol id="monitor" viewBox="0 0 32 32"><rect x="2" y="3" width="28" height="21" rx="3"/><path d="M10 30h12M16 24v6M6 15h5l3-6 4 11 3-5h5"/></symbol>
+    <symbol id="database" viewBox="0 0 32 32"><ellipse cx="16" cy="6" rx="12" ry="4"/><path d="M4 6v20c0 5 24 5 24 0V6M4 16c0 5 24 5 24 0M4 23c0 5 24 5 24 0"/></symbol>
+    <symbol id="plug" viewBox="0 0 32 32"><path d="m7 14 11 11M11 10l11 11M13 12l7-7M20 19l7-7M6 17l8 8c4 0 7-3 7-7l-7-7c-4 0-7 2-8 6ZM10 22l-6 6"/></symbol>
+    <symbol id="package" viewBox="0 0 32 32"><path d="m16 2 13 7v15l-13 7-13-7V9ZM3 9l13 7 13-7M16 16v15M9 5l13 7v7"/></symbol>
+    <style>
+      text { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', Arial, sans-serif; fill: #153149; }
+      .title { font-size: 46px; font-weight: 800; letter-spacing: -1.6px; }
+      .section { font-size: 27px; font-weight: 700; letter-spacing: -.5px; }
+      .node { font-size: 25px; font-weight: 700; letter-spacing: -.35px; }
+      .body { font-size: 21px; }
+      .small { font-size: 18px; }
+      .foot { font-size: 17px; }
+      .muted { fill: #577084; }
+      .teal { fill: #007d75; }
+      .blue { fill: #245dd8; }
+      .white { fill: #fff; }
+      .light { fill: #c2d6e4; }
+      .orange { fill: #ac5016; }
+      .icon { fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+      .card { fill: #fff; stroke: #d7e3ea; stroke-width: 1.5; }
+      .number { font-size: 23px; font-weight: 800; fill: #fff; text-anchor: middle; }
+      .center { text-anchor: middle; }
+      .strong { font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="1260" fill="#f2f6f9"/>
+
+  <!-- Brand mark redrawn from the local Worker Host vector asset; no raster dependencies. -->
+  <g transform="translate(48 39)">
+    <rect width="74" height="74" rx="17" fill="url(#brand-bg)"/>
+    <path d="M12 24h50M12 52h50M23 10v54M51 10v54" stroke="#5eead4" stroke-opacity=".18" stroke-width="3"/>
+    <path d="m15 24 12 31 10-23 11 23 12-31" fill="none" stroke="url(#brand-signal)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="15" cy="24" r="4" fill="#e0f2fe"/><circle cx="37" cy="32" r="4" fill="#ccfbf1"/><circle cx="60" cy="24" r="4" fill="#ecfccb"/>
+  </g>
+  <text x="145" y="77" class="title">Worker Host 시스템 아키텍처</text>
+  <text x="148" y="114" class="body muted">DreamLabs · 기준 배포와 승인 실행의 경계를 분리한 참조 구조</text>
+  <rect x="1473" y="42" width="399" height="37" rx="18.5" fill="#153149"/>
+  <text x="1672" y="67" class="small white strong center">REFERENCE v4 · 개념 구조</text>
+  <text x="1672" y="108" class="body orange center strong">production-ready 주장 아님</text>
+  <g class="small muted">
+    <path d="M1197 132h38" stroke="#008e84" stroke-width="3"/><text x="1247" y="138">Skill 전달</text>
+    <path d="M1362 132h38" stroke="#2563eb" stroke-width="3"/><text x="1412" y="138">요청·결과</text>
+    <path d="M1547 132h38" stroke="#ed8739" stroke-width="3"/><text x="1597" y="138">변경</text>
+    <path d="M1684 132h38" stroke="#7e96a4" stroke-width="2" stroke-dasharray="6 5"/><text x="1734" y="138">외부·선택</text>
+  </g>
+
+  <!-- 1. Governance and skill distribution are not the execution path. -->
+  <rect x="48" y="158" width="1824" height="202" rx="23" class="card"/>
+  <circle cx="86" cy="190" r="19" fill="#008e84"/><text x="86" y="198" class="number">1</text>
+  <text x="119" y="200" class="section">중앙 가이드 준비 → 선택한 Skill을 Worker별로 적용</text>
+  <text x="1825" y="197" text-anchor="end" class="small teal strong">설치 흐름 · 자동 일괄 push 아님</text>
+  <rect x="72" y="218" width="424" height="99" rx="15" fill="#edf6f7"/>
+  <use href="#instructions" x="92" y="238" width="43" height="43" class="icon" color="#008e84"/>
+  <text x="153" y="251" class="node">회사 중앙 업무 가이드</text>
+  <text x="153" y="285" class="body muted">업무 지침 · 역할 · 기준정보 준비</text>
+  <path d="M513 267h64" stroke="#008e84" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
+  <rect x="597" y="218" width="462" height="99" rx="15" fill="#e6f5f2"/>
+  <use href="#catalog" x="618" y="238" width="43" height="43" class="icon" color="#008e84"/>
+  <text x="680" y="251" class="node">Skill Registry</text>
+  <text x="680" y="285" class="body muted">선택한 패키지 · 버전 관리</text>
+  <path d="M1076 267h64" stroke="#008e84" stroke-width="3.5" marker-end="url(#arrow-teal)"/>
+  <rect x="1160" y="218" width="688" height="99" rx="15" fill="#edf6f7"/>
+  <use href="#server" x="1180" y="238" width="43" height="43" class="icon" color="#008e84"/>
+  <text x="1242" y="251" class="node">각 Worker에서 설치 → 활성화 → 검증</text>
+  <text x="1242" y="285" class="body muted">패키지 설치와 실제 실행 주입은 별도 확인</text>
+  <text x="82" y="343" class="small muted">역할 예시: 마케팅 · 영업 · 개발 · QA</text>
+  <text x="492" y="343" class="small muted">— 역할별 실행을 모두 검증했다는 뜻은 아닙니다.</text>
+
+  <!-- 2. The concrete bounded remote-agent request path. -->
+  <rect x="48" y="380" width="1308" height="446" rx="23" class="card"/>
+  <circle cx="86" cy="415" r="19" fill="#2563eb"/><text x="86" y="423" class="number">2</text>
+  <text x="119" y="424" class="section">요청마다 확인하는 Worker 간 실행</text>
+  <use href="#monitor" x="899" y="397" width="31" height="31" class="icon" color="#577084"/>
+  <text x="944" y="414" class="body strong">Portainer · 컨테이너 관리</text>
+  <text x="944" y="440" class="small muted">관리 제어면 · 요청 라우터 아님</text>
+
+  <rect x="72" y="462" width="220" height="270" rx="18" fill="#edf4ff"/>
+  <circle cx="182" cy="512" r="32" fill="#fff"/>
+  <use href="#people" x="162" y="491" width="39" height="39" class="icon" color="#2563eb"/>
+  <text x="182" y="568" class="node center">사용자</text>
+  <text x="182" y="603" class="body center strong blue">미리보기 · 승인</text>
+  <text x="182" y="637" class="small center muted">대상과 요청 범위 확인</text>
+  <path d="M100 657h164" stroke="#cdddf5" stroke-width="1.5"/>
+  <text x="182" y="689" class="body center">결과 확인 · 후속 판단</text>
+
+  <rect x="325" y="462" width="1007" height="270" rx="18" fill="#102c40"/>
+  <text x="349" y="491" class="body white strong">Docker Runtime</text>
+  <text x="542" y="491" class="small light">독립 Worker 컨테이너</text>
+
+  <rect x="346" y="511" width="326" height="177" rx="15" fill="#fff"/>
+  <rect x="364" y="530" width="45" height="45" rx="10" fill="#e4f4f2"/>
+  <use href="#server" x="373" y="539" width="28" height="28" class="icon" color="#008e84"/>
+  <text x="425" y="559" class="node">Worker A</text>
+  <text x="364" y="599" class="body muted">현재 사용자 세션</text>
+  <path d="M364 615h290" stroke="#dbe6eb" stroke-width="1.5"/>
+  <text x="364" y="649" class="body blue strong">outbound RRA Connector</text>
+
+  <rect x="906" y="511" width="405" height="177" rx="15" fill="#fff"/>
+  <rect x="925" y="530" width="45" height="45" rx="10" fill="#e4f4f2"/>
+  <use href="#server" x="934" y="539" width="28" height="28" class="icon" color="#008e84"/>
+  <text x="987" y="559" class="node">대상 Worker B</text>
+  <rect x="925" y="583" width="366" height="43" rx="9" fill="#ecf4ff"/>
+  <use href="#key" x="937" y="592" width="24" height="24" class="icon" color="#2563eb"/>
+  <text x="973" y="611" class="body blue strong">별도 API key · admission</text>
+  <text x="925" y="657" class="small muted">대상 측에서 별도 인증·허용 확인</text>
+
+  <path d="M292 574h45" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <circle cx="313" cy="551" r="12" fill="#2563eb"/><text x="313" y="557" class="small white center strong">1</text>
+  <text x="789" y="540" class="body white center strong">② 승인된 요청</text>
+  <text x="789" y="566" class="small light center">대상 1 · 요청 1</text>
+  <path d="M672 584h224" stroke="#4484ff" stroke-width="3.5" marker-end="url(#arrow-blue)"/>
+  <text x="789" y="640" class="body center" fill="#93cdff" style="fill:#93cdff">③ 결과 반환</text>
+  <path d="M906 659H682" stroke="#67b9ff" stroke-width="3" marker-end="url(#arrow-result)"/>
+  <path d="M346 671h-45" stroke="#67b9ff" stroke-width="3" marker-end="url(#arrow-result)"/>
+  <text x="350" y="717" class="small light">각 Worker 보유: Knowledge · Workspace · Skills · Adapters + Tool Connector</text>
+
+  <use href="#shield" x="73" y="752" width="30" height="30" class="icon" color="#2563eb"/>
+  <text x="117" y="776" class="body blue strong">④ 같은 세션의 후속 요청도 새 미리보기·승인</text>
+  <text x="80" y="806" class="small muted">권한 승계 없음 · 자율 연쇄 / 팬아웃 없음</text>
+  <text x="582" y="806" class="small muted">|</text>
+  <text x="608" y="806" class="small muted">Worker 간 첨부 전달 보류</text>
+
+  <!-- Dashed enclosure: conceptual external functions and configuration examples. -->
+  <rect x="1380" y="380" width="492" height="446" rx="23" fill="#f5fbfa" stroke="#88b8b5" stroke-width="2" stroke-dasharray="9 6"/>
+  <use href="#plug" x="1405" y="398" width="33" height="33" class="icon" color="#008e84"/>
+  <text x="1452" y="424" class="section">외부 연동 · 구성 예시</text>
+  <text x="1406" y="453" class="small muted">내장·배포 완료를 일괄 뜻하지 않음</text>
+  <g class="icon" color="#008e84">
+    <use href="#instructions" x="1408" y="474" width="27" height="27"/>
+    <use href="#key" x="1408" y="516" width="27" height="27"/>
+    <use href="#database" x="1408" y="558" width="27" height="27"/>
+    <use href="#shield" x="1408" y="600" width="27" height="27"/>
+    <use href="#plug" x="1408" y="642" width="27" height="27"/>
+  </g>
+  <g class="body">
+    <text x="1451" y="496"><tspan class="strong">WorkMap</tspan><tspan x="1599">업무·역할 정의</tspan></text>
+    <text x="1451" y="538"><tspan class="strong">Key</tspan><tspan x="1599">사용자·채널 인증</tspan></text>
+    <text x="1451" y="580"><tspan class="strong">SSOT</tspan><tspan x="1599">기준정보</tspan></text>
+    <text x="1451" y="622"><tspan class="strong">Approval</tspan><tspan x="1599">사람 승인</tspan></text>
+    <text x="1451" y="664"><tspan class="strong">Tuner</tspan><tspan x="1599">도구·Connector</tspan></text>
+  </g>
+  <path d="M1405 687h440" stroke="#bdd5d3" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="1406" y="720" class="body strong">사내 API · DB · 문서 · SaaS</text>
+  <text x="1406" y="754" class="small muted">Mattermost: 요청·협업 채널 예시</text>
+  <text x="1406" y="790" class="body teal strong">연동 범위는 환경별 별도 검증</text>
+
+  <!-- 3. Operations are not a request-routing layer. -->
+  <rect x="48" y="848" width="1824" height="174" rx="23" fill="#102c40"/>
+  <circle cx="86" cy="882" r="19" fill="#ed8739"/><text x="86" y="890" class="number">3</text>
+  <text x="119" y="891" class="section white">AgentOps · 변경 및 관찰은 실행 경계와 분리</text>
+  <text x="1824" y="888" class="small light" text-anchor="end">배포 상태와 실제 연동 범위는 환경별 확인</text>
+
+  <rect x="73" y="909" width="222" height="64" rx="12" fill="#fff4e9"/>
+  <use href="#git" x="91" y="926" width="31" height="31" class="icon" color="#dc6d25"/>
+  <text x="137" y="950" class="body strong">GitLab CI</text>
+  <path d="M306 941h31" stroke="#f9913d" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="347" y="909" width="276" height="64" rx="12" fill="#fff4e9"/>
+  <use href="#package" x="364" y="926" width="30" height="30" class="icon" color="#dc6d25"/>
+  <text x="409" y="950" class="body strong">불변 이미지 후보</text>
+  <path d="M634 941h30" stroke="#f9913d" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="676" y="909" width="404" height="64" rx="12" fill="#fff4e9"/>
+  <text x="878" y="935" class="body strong center">site-local Update Manager</text>
+  <text x="878" y="960" class="small orange center">검증·승인 후 통제된 변경 (effect)</text>
+  <path d="M1091 941h30" stroke="#f9913d" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="1133" y="909" width="176" height="64" rx="12" fill="#fff4e9"/>
+  <use href="#server" x="1150" y="926" width="29" height="29" class="icon" color="#dc6d25"/>
+  <text x="1192" y="950" class="body strong">Worker</text>
+  <rect x="1336" y="909" width="510" height="64" rx="12" fill="#17374c" stroke="#9db4c3" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="1356" y="935" class="body white strong">선택형 Worker Registry</text>
+  <text x="1356" y="960" class="small light">이미지 공급·토폴로지 가시성 / Skill Registry와 별개</text>
+
+  <use href="#monitor" x="76" y="986" width="25" height="25" class="icon" color="#5ad5c2"/>
+  <text x="112" y="1006" class="small white">Zabbix: 상태 관찰</text>
+  <use href="#bell" x="374" y="986" width="25" height="25" class="icon" color="#72bfff"/>
+  <text x="410" y="1006" class="small white">Telegram: 운영 알림</text>
+  <text x="716" y="1006" class="small light">Mattermost: 협업 채널 예시</text>
+  <text x="1823" y="1006" class="small light" text-anchor="end">관찰·알림 도구가 실행 권한을 승계하지 않음</text>
+
+  <!-- 4. Observations, source checks, and pending acceptance are deliberately separate. -->
+  <rect x="48" y="1044" width="1824" height="150" rx="23" class="card"/>
+  <circle cx="86" cy="1076" r="19" fill="#577084"/><text x="86" y="1084" class="number">4</text>
+  <text x="119" y="1086" class="section">검증 상태 · 서로 다른 근거를 분리해서 읽기</text>
+  <path d="M622 1110v61M1181 1110v61" stroke="#dbe5eb" stroke-width="1.5"/>
+
+  <rect x="80" y="1103" width="177" height="27" rx="13.5" fill="#e2f4ed"/>
+  <text x="168" y="1123" class="small teal strong center">과거 한정 검증</text>
+  <text x="80" y="1150" class="body strong">2026-10-03 · worker0 → worker1</text>
+  <text x="80" y="1178" class="small muted">최초+후속 총 2건 · 중복 0 / 전체·현재 가용성 아님</text>
+
+  <rect x="647" y="1103" width="241" height="27" rx="13.5" fill="#fff0df"/>
+  <text x="767" y="1123" class="small orange strong center">설치 관찰 / 수용 대기</text>
+  <text x="647" y="1150" class="body strong">Skill Registry 1개 패키지 설치 관찰</text>
+  <text x="647" y="1178" class="small muted">enable · injection 운영 수용 검증 대기</text>
+
+  <rect x="1205" y="1103" width="276" height="27" rx="13.5" fill="#eaf2ff"/>
+  <text x="1343" y="1123" class="small blue strong center">소스 검증 / 운영 수용 대기</text>
+  <text x="1205" y="1150" class="body strong">Context Selector 소스 검증 완료</text>
+  <text x="1205" y="1178" class="small muted">운영 기능 수용 대기 · 10/07 이미지 관찰은 기능 증거 아님</text>
+
+  <text x="49" y="1223" class="foot muted">참조 SHA e962e7387968da6c1e8e274c708a4515f464c6f5 · 읽기 기준 2026-10-08</text>
+  <text x="1871" y="1223" class="foot muted" text-anchor="end">Source-only · 관찰됨 · 수용 대기 · 구성 예시는 서로 다른 상태입니다.</text>
+  <text x="49" y="1247" class="foot muted">세부 조건과 검증 근거는 함께 제공되는 텍스트 설명을 참조하세요.</text>
+  <text x="1871" y="1247" class="foot muted" text-anchor="end">DreamLabs Worker Host · Architecture v4</text>
+</svg>
